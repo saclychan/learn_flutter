@@ -62,6 +62,17 @@ ships.forEach((ship) {
 
 > 💡 **Fun Fact**: Dart Lexically Scoped, nghĩa là phạm vi biến tĩnh (tính từ vị trí viết code). Một Closure có thể "nhớ" và sử dụng các biến ở phạm vi bên ngoài nó ngay cả khi hàm bên ngoài đã chạy xong! (Rất lợi hại trong các callback bất đồng bộ).
 
+> 🧠 **Senior Detail - Tear-offs**: Thay vì viết một hàm ẩn danh chỉ để gọi một hàm khác có cùng tham số, bạn có thể truyền thẳng tên hàm! Cách này gọi là Tear-off. Nó giúp code gọn gàng và trông vô cùng chuyên nghiệp.
+```dart
+// Cách thông thường (Hơi dài dòng):
+ships.forEach((ship) => print(ship));
+
+// Cách Senior viết (Tear-off):
+ships.forEach(print); // Truyền hàm print trực tiếp!
+```
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên truyền ngoặc `{}` cho Named Parameters, hoặc truyền sai kiểu dữ liệu vào hàm. Ngoài ra, việc lạm dụng quá nhiều tham số (hơn 4 tham số) cho một hàm cũng là "red flag" (dấu hiệu code xấu). Nếu hàm cần quá nhiều tham số, hãy bọc chúng vào một Class.
+
 ---
 ### 🛠 Bài tập cho bạn
 1. Viết một hàm `calculateBMI` nhận vào chiều cao và cân nặng dạng Named Parameters (`required`), trả về số `double`.

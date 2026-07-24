@@ -28,6 +28,20 @@ void main() {
 }
 ```
 
+> 🧠 **Senior Detail - Cascade Notation (`..`)**: Khi bạn muốn gọi nhiều hàm hoặc gán nhiều biến liên tiếp trên cùng MỘT object, hãy dùng toán tử `..`. Nó trả về chính object đó sau khi gọi hàm, giúp bạn tiết kiệm rất nhiều dòng code lặp lại tên biến.
+```dart
+// Cách thông thường:
+var ship = Spaceship('X-Wing', 0);
+ship.fuel = 50;
+ship.fly();
+
+// Cách Senior với Cascade:
+var ship2 = Spaceship('X-Wing', 0)
+  ..fuel = 50
+  ..fly();
+```
+
+
 ## 2. Constructors (Hàm khởi tạo)
 Dart hỗ trợ nhiều loại Constructor thú vị hơn Java/C++.
 
@@ -85,6 +99,8 @@ class Jedi {
 }
 ```
 > 💡 **Fun Fact**: Ở Dart, tính đóng gói (private) hoạt động ở cấp độ **thư viện (library/file)** chứ không phải cấp độ class! Tức là nếu 2 class viết chung trong 1 file `lesson4.dart`, chúng vẫn truy cập được biến `_private` của nhau. Phải tách file thì nó mới thực sự ẩn đi.
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên dùng dấu `_` để bảo vệ các biến nội bộ (Encapsulation), dẫn đến việc các class khác thoải mái sửa đổi trạng thái của class hiện tại, gây ra những bug cực kỳ khó dò. Luôn nhớ: Nếu biến không cần thiết phải lộ ra ngoài, hãy cho nó thành private `_`!
 
 ---
 ### 🛠 Bài tập cho bạn

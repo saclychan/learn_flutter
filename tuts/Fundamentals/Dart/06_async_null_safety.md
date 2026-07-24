@@ -58,6 +58,19 @@ void showUser() async {
 
 > 💡 **Fun Fact - Event Loop**: Dart chạy trên duy nhất 1 luồng (Single Thread). Vậy sao nó làm được nhiều việc cùng lúc? Nó dùng Event Loop. Có 2 hàng đợi: **Microtask Queue** và **Event Queue**. Microtask được ưu tiên cực độ. `Future` chạy trên Event Queue, nghĩa là nó nhường đường cho các tác vụ vẽ UI quan trọng chạy trước, giữ cho app mượt 60fps!
 
+> 🧠 **Senior Detail - Tối ưu hóa với `Future.wait`**: Nếu bạn có 3 API cần gọi (ví dụ lấy Profile, lấy Settings, lấy Friends) và chúng KHÔNG phụ thuộc vào nhau. Đừng `await` từng cái một (sẽ cộng dồn thời gian chờ). Hãy dùng `Future.wait` để gọi chúng song song!
+```dart
+// Thay vì mất 6 giây:
+// var p = await getProfile(); // mất 2s
+// var s = await getSettings(); // mất 2s
+// var f = await getFriends(); // mất 2s
+
+// Hãy chạy song song, chỉ mất 2 giây tổng cộng:
+var results = await Future.wait([getProfile(), getSettings(), getFriends()]);
+```
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên `await` khi gọi API! Đây là lỗi phổ biến số 1 của Junior. Nếu quên `await`, biến của bạn sẽ là một `Future<T>` chứ không phải là kiểu `T`, và dĩ nhiên UI sẽ không thể hiển thị được. Lỗi số 2 là lạm dụng toán tử ép buộc `!` cho các biến nullable mà không thèm check if-null, dẫn đến crash app kinh hoàng.
+
 ---
 ### 🛠 Bài tập cho bạn
 1. Khai báo một class `User` với thuộc tính `id` (bắt buộc) và `avatarUrl` (có thể null `?`).

@@ -83,6 +83,21 @@ void main() {
 
 > 🧠 **Senior Detail - Diamond Problem**: Điều gì xảy ra nếu cả 2 mixin `Agility` và `Strength` đều có hàm tên là `action()`? Dart xử lý bằng **Linearization (tuyến tính hóa)**. Mixin được khai báo **sau cùng** (bên phải nhất) sẽ ghi đè lên các mixin trước đó. Ở ví dụ trên, hàm của `Strength` sẽ ghi đè `Agility` nếu chúng trùng tên.
 
+## 4. Extension Methods (Mở rộng phương thức)
+> 💡 **Fun Fact & Senior Trick**: Nếu bạn muốn thêm một hàm vào class `String` hoặc `int` của hệ thống thì sao? Bạn không thể sửa mã nguồn của Dart, nhưng bạn có thể dùng `extension`!
+```dart
+extension StringCasingExtension on String {
+  String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
+}
+
+void main() {
+  print('vader'.toCapitalized()); // In ra: Vader
+}
+```
+Các senior dev dùng Extension Methods rất nhiều để format chuỗi, ngày tháng, hay tùy biến giao diện mà không phải viết những file `Utils` cồng kềnh.
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Lạm dụng kế thừa (`extends`) thay vì sử dụng Composition (thành phần) hoặc Mixins. Điều này tạo ra một "Gia phả" class khổng lồ, rối rắm và khó bảo trì. Lời khuyên: Hãy ưu tiên Interface và Mixin trước khi nghĩ đến Kế thừa sâu.
+
 ---
 ### 🛠 Bài tập cho bạn
 1. Viết một `abstract class Vehicle` có hàm `startEngine()`.

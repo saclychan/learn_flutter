@@ -2,6 +2,17 @@
 
 Chào mừng bạn đến với bài học đầu tiên! Để làm chủ Dart và Flutter, chúng ta cần hiểu cách Dart lưu trữ và quản lý dữ liệu.
 
+## 0. Hàm main() - Nơi bắt đầu tất cả
+Trước khi đi vào cú pháp, bạn cần biết một quy tắc sống còn: Mọi chương trình Dart đều **bắt buộc** phải bắt đầu chạy từ một hàm có tên là `main()`. Nếu không có hàm này, trình biên dịch sẽ không biết ứng dụng của bạn bắt đầu từ đâu!
+
+```dart
+void main() {
+  // Mọi dòng code thực thi của bạn sẽ được viết ở trong này
+  print('Hello Dart!');
+}
+```
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Các bạn mới chuyển từ Python hoặc JavaScript sang thường hay viết code gán biến hoặc `print` "lơ lửng" bên ngoài hàm. Ở Dart, nếu code thực thi không nằm trong (hoặc được gọi từ) hàm `main()`, nó sẽ báo lỗi ngay lập tức.
+
 ## 1. Khai báo biến
 Trong Dart, bạn có nhiều cách để khai báo một biến.
 
@@ -65,6 +76,8 @@ mysteriousVariable = 42; // Hợp lệ, đổi thành số nguyên
 mysteriousVariable.doSomethingCrazy(); // Code vẫn build được, nhưng sẽ sập lúc chạy!
 ```
 > 💡 **Fun Fact**: `dynamic` tắt hoàn toàn kiểm tra kiểu (type checking). Còn nếu bạn dùng `Object?`, trình biên dịch vẫn bắt bạn ép kiểu trước khi gọi hàm. Senior dev rất "ghét" `dynamic` và hạn chế dùng tối đa để tránh runtime error.
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Rất nhiều bạn mới học thường lạm dụng `dynamic` hoặc `var` vô tội vạ. Hãy nhớ: Code của bạn sẽ được người khác (hoặc chính bạn sau 3 tháng) đọc lại. Dùng `final` hoặc định nghĩa rõ kiểu (như `String`, `int`) ngay từ đầu sẽ cứu bạn khỏi hàng tá lỗi "không hiểu tại sao crash" lúc ứng dụng đang chạy.
 
 ---
 ### 🛠 Bài tập cho bạn (Typing & Trải nghiệm)

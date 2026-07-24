@@ -39,6 +39,17 @@ for (var planet in planets) {
 }
 ```
 
+> 🧠 **Senior Detail - Collection `if` và Collection `for`**: Đây là "vũ khí bí mật" của Dart khiến việc viết UI Flutter cực kỳ sướng. Bạn có thể chèn `if` và `for` **TRỰC TIẾP** vào bên trong một khai báo List/Set/Map!
+```dart
+bool isPremium = true;
+List<String> features = [
+  'Basic Feature',
+  if (isPremium) 'Pro Feature', // Không cần dấu {}
+  for (var i = 1; i <= 3; i++) 'Bonus $i'
+];
+// Kết quả: ['Basic Feature', 'Pro Feature', 'Bonus 1', 'Bonus 2', 'Bonus 3']
+```
+
 ## 3. Vòng lặp while & do-while
 - `while`: Kiểm tra điều kiện trước, rồi mới chạy code.
 - `do-while`: Chạy code ít nhất 1 lần, rồi mới kiểm tra điều kiện.
@@ -80,6 +91,8 @@ String status = switch (rank) {
   _ => 'Unknown' // _ đại diện cho default
 };
 ```
+
+> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Lỗi kinh điển nhất là tạo những vòng lặp vô tận (infinite loop) trong `while` vì quên cập nhật biến điều kiện, hoặc lồng quá nhiều `if-else` (Nested if-else) làm code trông như một cái phễu khổng lồ. Hãy học cách Return sớm (Early return) để làm phẳng code!
 
 ---
 ### 🛠 Bài tập cho bạn
