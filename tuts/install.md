@@ -1,0 +1,157 @@
+# Flutter 101 — cài đặt và chạy Hello World (macOS)
+
+Mục tiêu của bài này: từ một máy Mac chưa có Flutter đến khi chạy được một ứng dụng Flutter đầu tiên. Không cần biết Dart trước; Flutter sẽ cài Dart kèm theo SDK.
+
+> Hướng dẫn này ưu tiên chạy trên **Chrome** để bắt đầu nhanh. Sau đó bạn có thể bật Android hoặc iOS. Trước khi cài, kiểm tra máy Apple Silicon hay Intel bằng `uname -m` (`arm64` là Apple Silicon).
+
+## 1. Cài công cụ cơ bản
+
+Mở Terminal và chạy:
+
+```zsh
+xcode-select --install
+```
+
+Cài [VS Code](https://code.visualstudio.com/) rồi mở Extensions (`⇧⌘X`) và cài hai extension của **Dart Code**:
+
+- `Dart`
+- `Flutter`
+
+Bạn cũng có thể dùng Android Studio, nhưng VS Code nhẹ hơn để bắt đầu.
+
+## 2. Cài Flutter SDK
+
+1. Mở [Flutter SDK archive](https://docs.flutter.dev/install/archive) và tải gói **stable** dành cho macOS, đúng kiến trúc máy (`arm64` hoặc `x64`).
+2. Giải nén SDK vào thư mục cá nhân, ví dụ `~/development/flutter`. Đừng đặt SDK trong thư mục dự án này hoặc trong `Downloads`, vì rất dễ bị di chuyển/xóa.
+3. Thêm Flutter vào `PATH`. Với shell zsh mặc định trên macOS, chạy:
+
+```zsh
+echo 'export PATH="$HOME/development/flutter/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Kiểm tra:
+
+```zsh
+flutter --version
+flutter doctor
+```
+
+`flutter doctor` liệt kê phần đã sẵn sàng và phần còn thiếu. Ở bước đầu, dấu ✓ cạnh **Flutter**, **Chrome**, và **VS Code** là đủ để chạy web. Chạy lại lệnh này mỗi khi bạn vừa cài thêm Android Studio/Xcode.
+
+## 3. Chạy Hello World trên Chrome
+
+Tại thư mục gốc của repository này, tạo ứng dụng:
+
+```zsh
+flutter create hello_flutter
+cd hello_flutter
+flutter run -d chrome
+```
+
+Lần đầu Flutter sẽ tải các dependency, sau đó Chrome mở app đếm số mặc định. Khi Terminal đang chạy app:
+
+- Nhấn `r` để **hot reload**: cập nhật UI nhanh mà không mất state hiện tại.
+- Nhấn `R` để **hot restart**: chạy lại app và reset state.
+- Nhấn `q` để dừng.
+
+Mở `hello_flutter/lib/main.dart`, thay toàn bộ nội dung bằng đoạn tối giản này rồi lưu. App sẽ tự hot reload:
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Text(
+            'Hello, Flutter!',
+            style: TextStyle(fontSize: 32),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Vậy là bạn đã chạy Hello World. Trong Flutter, mọi thứ trên màn hình là một **widget**: `MaterialApp` là vỏ ứng dụng, `Scaffold` là khung màn hình, `Center` căn giữa, còn `Text` hiển thị chữ.
+
+## 4. Chạy từ VS Code
+
+Mở thư mục `hello_flutter` bằng VS Code:
+
+```zsh
+code .
+```
+
+Chọn thiết bị `Chrome` ở thanh trạng thái phía dưới, sau đó nhấn `F5` (hoặc **Run > Start Debugging**). Bạn có thể đặt breakpoint, xem lỗi và hot reload ngay trong editor.
+
+Nếu lệnh `code` chưa tồn tại, mở Command Palette (`⇧⌘P`) và chạy **Shell Command: Install 'code' command in PATH**.
+
+## 5. Muốn chạy điện thoại thật / giả lập?
+
+### Android
+
+1. Cài [Android Studio](https://developer.android.com/studio).
+2. Trong Setup Wizard, cài Android SDK, Platform-Tools và Android Emulator.
+3. Vào **Tools > Device Manager**, tạo và khởi động một virtual device.
+4. Chấp nhận license rồi chạy app:
+
+```zsh
+flutter doctor --android-licenses
+flutter devices
+flutter run
+```
+
+### iPhone Simulator (chỉ trên macOS)
+
+1. Cài **Xcode** từ App Store và mở nó một lần để hoàn tất cài đặt.
+2. Chạy các lệnh sau:
+
+```zsh
+sudo xcodebuild -license accept
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+open -a Simulator
+flutter devices
+flutter run
+```
+
+Để chạy trên iPhone thật, bạn cần đăng nhập Apple ID trong Xcode; phát hành App Store cần Apple Developer Program.
+
+## 6. Lỗi thường gặp
+
+| Triệu chứng | Cách xử lý |
+| --- | --- |
+| `zsh: command not found: flutter` | Kiểm tra Flutter nằm tại `~/development/flutter/bin/flutter`, sau đó chạy lại lệnh thêm `PATH` ở bước 2 và mở Terminal mới. |
+| `No devices found` | Chạy `flutter devices`; với web hãy mở Chrome/cài Chrome, với Android hãy khởi động emulator, với iOS hãy mở Simulator. |
+| `Android licenses not accepted` | Chạy `flutter doctor --android-licenses` và gõ `y` để chấp nhận. |
+| `Xcode not installed` hoặc lỗi CocoaPods | Cài/mở Xcode, chạy `flutter doctor`; làm theo đúng dòng gợi ý của `doctor`. Chỉ cài CocoaPods khi bạn thật sự chạy iOS. |
+| VS Code không nhận Flutter | Đóng/mở lại VS Code sau khi thêm `PATH`, rồi kiểm tra extension Dart và Flutter đã được bật. |
+
+## Checklist hoàn thành
+
+```zsh
+flutter doctor
+flutter create hello_flutter
+cd hello_flutter
+flutter run -d chrome
+```
+
+Khi thấy chữ **Hello, Flutter!** trong Chrome, bạn đã hoàn thành bài cài đặt.
+
+## Học tiếp
+
+- [Quick start chính thức của Flutter](https://docs.flutter.dev/get-started/quick)
+- [Dart language tour](https://dart.dev/language)
+- [Widget catalog](https://docs.flutter.dev/ui/widgets)
+- [Hướng dẫn cài Flutter chính thức](https://docs.flutter.dev/install/manual)
