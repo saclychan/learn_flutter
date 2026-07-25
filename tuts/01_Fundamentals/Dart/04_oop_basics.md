@@ -100,11 +100,26 @@ class Jedi {
 ```
 > 💡 **Fun Fact**: Ở Dart, tính đóng gói (private) hoạt động ở cấp độ **thư viện (library/file)** chứ không phải cấp độ class! Tức là nếu 2 class viết chung trong 1 file `lesson4.dart`, chúng vẫn truy cập được biến `_private` của nhau. Phải tách file thì nó mới thực sự ẩn đi.
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên dùng dấu `_` để bảo vệ các biến nội bộ (Encapsulation), dẫn đến việc các class khác thoải mái sửa đổi trạng thái của class hiện tại, gây ra những bug cực kỳ khó dò. Luôn nhớ: Nếu biến không cần thiết phải lộ ra ngoài, hãy cho nó thành private `_`!
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Phơi bày mọi thứ (Thiếu Encapsulation):** Quên dùng dấu `_` để bảo vệ các biến nội bộ là một lỗi rất phổ biến. Hậu quả là các class khác thoải mái sửa đổi trạng thái của class hiện tại, gây ra những bug dữ liệu cực kỳ khó dò ("Ai đã đổi giá trị của biến này vậy?"). **Cách phòng tránh:** Luôn mặc định biến là private (`_`). Chỉ khi nào bên ngoài thực sự cần đọc/ghi, mới mở ra bằng Getter/Setter.
+- **Ngộ nhận Constructor:** Nhiều bạn nghĩ Constructor chỉ để khởi tạo giá trị. Thực tế với Dart, Factory Constructors còn giúp quản lý caching, trả về các instance đã tạo (Singleton), hoặc quyết định trả về subtype nào. Đừng bó hẹp tư duy Constructor = Khởi tạo biến.
+- **Quên dùng Cascade (`..`):** Khởi tạo object và gọi liên tiếp 4-5 hàm của object đó bằng cách gõ tên biến nhiều lần (vd: `ship.fuel = 10; ship.color = 'red';`). Nó không sai nhưng nhìn rất "Junior". **Cách phòng tránh:** Tập thói quen dùng `..` để code mượt và ngắn gọn hơn.
 
 ---
-### 🛠 Bài tập cho bạn
-1. Tạo một class `Product` với thuộc tính `id`, `name`, và `price`.
-2. Viết constructor cho class đó sử dụng Named Parameters.
-3. Dấu giá trị `price` thành private (thêm `_` phía trước) và viết một Getter để lấy giá trị `price`, một Setter để set `price` (nhưng chỉ cho phép set nếu giá trị > 0).
-4. Thử khởi tạo Object và sử dụng thử getter/setter như một thuộc tính bình thường (VD: `product.price = 10;`).
+### 🚀 Mini Pet Project: App Quản lý Chi tiêu (Expense Tracker Core)
+
+Đây là nền tảng (core logic) cho một App Quản lý Chi tiêu rất phổ biến. Bạn sẽ dựng khung dữ liệu cho nó!
+
+**Yêu cầu:**
+1. Tạo file `expense_tracker.dart`.
+2. Định nghĩa class `Expense` gồm các thuộc tính: `_id` (private), `title` (String), `amount` (double), `date` (DateTime).
+3. Viết Constructor dùng Named Parameters để khởi tạo.
+4. Thêm một biến static đếm tổng số Expense đã tạo.
+5. Viết một hàm (method) `printDetails()` dùng Cascade Notation `..` lúc khởi tạo object để in thông tin ra một cách gọn gàng.
+6. Thử ép giá trị `amount` âm (qua setter) và quăng ra lỗi (Throw Exception) để chặn người dùng nhập sai.
+
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Classes & Objects Official Docs](https://dart.dev/language/classes)
+> - [Dart Constructors](https://dart.dev/language/constructors)
+
+*Khi nào code xong, nhớ quăng lên đây để Mentor "soi" lỗi giúp bạn nhé!*

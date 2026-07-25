@@ -11,7 +11,6 @@ void main() {
   print('Hello Dart!');
 }
 ```
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Các bạn mới chuyển từ Python hoặc JavaScript sang thường hay viết code gán biến hoặc `print` "lơ lửng" bên ngoài hàm. Ở Dart, nếu code thực thi không nằm trong (hoặc được gọi từ) hàm `main()`, nó sẽ báo lỗi ngay lập tức.
 
 ## 1. Khai báo biến
 Trong Dart, bạn có nhiều cách để khai báo một biến.
@@ -77,16 +76,22 @@ mysteriousVariable.doSomethingCrazy(); // Code vẫn build được, nhưng sẽ
 ```
 > 💡 **Fun Fact**: `dynamic` tắt hoàn toàn kiểm tra kiểu (type checking). Còn nếu bạn dùng `Object?`, trình biên dịch vẫn bắt bạn ép kiểu trước khi gọi hàm. Senior dev rất "ghét" `dynamic` và hạn chế dùng tối đa để tránh runtime error.
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Rất nhiều bạn mới học thường lạm dụng `dynamic` hoặc `var` vô tội vạ. Hãy nhớ: Code của bạn sẽ được người khác (hoặc chính bạn sau 3 tháng) đọc lại. Dùng `final` hoặc định nghĩa rõ kiểu (như `String`, `int`) ngay từ đầu sẽ cứu bạn khỏi hàng tá lỗi "không hiểu tại sao crash" lúc ứng dụng đang chạy.
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Ngộ nhận về khai báo biến:** Các bạn mới chuyển từ Python hoặc JavaScript sang thường hay viết code gán biến hoặc `print` "lơ lửng" bên ngoài hàm. Ở Dart, nếu code thực thi không nằm trong (hoặc được gọi từ) hàm `main()`, nó sẽ báo lỗi ngay lập tức. **Cách phòng tránh:** Luôn nhớ `main()` là trái tim của ứng dụng. Mọi logic thực thi đều bắt nguồn từ đây.
+- **Lạm dụng `dynamic` và `var` vô tội vạ:** Code chạy được là một chuyện, đọc hiểu và bảo trì lại là chuyện khác. Rất nhiều bạn cứ `var` hoặc `dynamic` khi gọi API vì lười định nghĩa kiểu. Sau 3 tháng đọc lại code, bạn sẽ không biết biến đó chứa data gì, có những thuộc tính nào. **Cách phòng tránh:** Khai báo rõ ràng kiểu dữ liệu (`String`, `int`, hoặc tự định nghĩa Class). Dùng `final` ngay từ đầu sẽ cứu bạn khỏi hàng tá lỗi "không hiểu tại sao crash".
 
 ---
-### 🛠 Bài tập cho bạn (Typing & Trải nghiệm)
+### 🚀 Mini Pet Project: Hồ sơ Nhân vật RPG (RPG Character Profile)
 
-> 💡 **Fun Fact - Cách chạy code**: Dart đi kèm với công cụ CLI rất mạnh. Bạn không cần setup IDE phức tạp để test logic. Chỉ cần mở terminal và gõ `dart lesson1.dart`, code sẽ chạy ngay lập tức!
+Học phải đi đôi với hành! Đừng gõ mấy ví dụ `a`, `b`, `c` nhàm chán nữa, hãy viết một script tạo ra hồ sơ cho một nhân vật game nhập vai.
 
-1. Hãy tạo một file `lesson1.dart` trên máy của bạn (hoặc dùng [DartPad](https://dartpad.dev)).
-2. Tạo các biến giới thiệu về bản thân (Tên, tuổi, sở thích dưới dạng List).
-3. In ra console một chuỗi giới thiệu sử dụng String Interpolation.
-4. Thử thay đổi giá trị của một biến `final` xem trình biên dịch báo lỗi gì.
+**Yêu cầu:**
+1. Tạo file `rpg_profile.dart`.
+2. Khai báo các biến lưu trữ thông tin: Tên (String), Tuổi (int), Chiều cao (double), Nghề nghiệp (String - dùng `final`), Các kỹ năng (List), Chỉ số sức mạnh (Map).
+3. In ra console một bảng thông tin đẹp mắt sử dụng String Interpolation.
 
-*Khi bạn gõ xong và thử nghiệm, hãy gửi code hoặc mô tả trải nghiệm để mình review nhé!*
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Variables Official Docs](https://dart.dev/language/variables)
+> - [Dart Built-in Types](https://dart.dev/language/built-in-types)
+
+*Gợi ý: Mở terminal, chạy lệnh `dart rpg_profile.dart` để xem kết quả. Nếu bí, gửi code lên đây mình sẽ gợi ý (chứ không đưa giải pháp ngay đâu nha)!*

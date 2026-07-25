@@ -69,13 +69,26 @@ void showUser() async {
 var results = await Future.wait([getProfile(), getSettings(), getFriends()]);
 ```
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên `await` khi gọi API! Đây là lỗi phổ biến số 1 của Junior. Nếu quên `await`, biến của bạn sẽ là một `Future<T>` chứ không phải là kiểu `T`, và dĩ nhiên UI sẽ không thể hiển thị được. Lỗi số 2 là lạm dụng toán tử ép buộc `!` cho các biến nullable mà không thèm check if-null, dẫn đến crash app kinh hoàng.
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Quên `await` khi gọi API (Lỗi kinh điển):** Gọi hàm trả về `Future` mà quên `await`, kết quả là bạn nhận được một hộp quà (Future) chứ không phải món đồ bên trong (Data). UI sẽ hiện lỗi kiểu báo không tương thích hoặc trắng xóa. **Cách phòng tránh:** Luôn rà soát cẩn thận các hàm có chữ `async`. Nếu thấy gọi API, phải có `await` đằng trước.
+- **Vung vẩy "Búa tạ" (Toán tử `!`):** Thấy báo lỗi Null Safety, Junior thường "tiện tay" ném dấu `!` vào để ép compiler im lặng. Đây là mầm mống của thảm họa `NullThrownError` lúc app đang chạy. **Cách phòng tránh:** Chỉ dùng `!` khi 100% tự tin biến không thể null. Luôn ưu tiên dùng `??` hoặc `if (var != null)` để xử lý luồng an toàn.
+- **Nghẽn cổ chai API:** Gọi tuần tự 3 API mất 3x thời gian, thay vì dùng `Future.wait` để chạy song song. **Cách phòng tránh:** Nhận diện các task bất đồng bộ không phụ thuộc lẫn nhau, và gộp chúng vào `Future.wait`.
 
 ---
-### 🛠 Bài tập cho bạn
-1. Khai báo một class `User` với thuộc tính `id` (bắt buộc) và `avatarUrl` (có thể null `?`).
-2. Viết một hàm `getUserInfo()` có kiểu trả về `Future<User>`, sử dụng `Future.delayed` delay 3 giây rồi trả về 1 object `User`.
-3. Viết hàm `main() async`, in ra "Đang tải...", gọi `await getUserInfo()`, sau đó dùng toán tử `??` để in ra `avatarUrl` (nếu null thì in ra "No Avatar").
-4. Trải nghiệm cảm giác code chờ 3 giây mà không làm đơ chương trình.
+### 🚀 Mini Pet Project: Mô phỏng Gọi API Thời tiết (Weather API Mock)
 
-*Gõ và chạy hết 6 bài này là bạn đã có một bộ "nội công" Dart cực kỳ vững chắc để nhảy vào múa Flutter rồi đấy. Báo lại cho mình sau khi trải nghiệm xong nhé!*
+App nào cũng phải gọi API. Ở bài này, bạn sẽ giả lập quá trình lấy dữ liệu từ máy chủ mạng!
+
+**Yêu cầu:**
+1. Tạo file `weather_api.dart`.
+2. Khai báo một model `Weather` với biến `cityName` (bắt buộc) và `temperature` (có thể null `?` trong trường hợp sensor hỏng).
+3. Viết 2 hàm bất đồng bộ: `fetchWeatherHanoi()` và `fetchWeatherSaigon()`. Cả 2 đều dùng `Future.delayed` (khoảng 2-3 giây) để mô phỏng mạng chậm, sau đó trả về object `Weather`.
+4. Trong hàm `main() async`, không dùng `await` tuần tự, mà hãy dùng `Future.wait()` để lấy dữ liệu thời tiết của cả 2 thành phố cùng MỘT LÚC!
+5. In kết quả ra màn hình. Nếu `temperature` bị null, hãy dùng toán tử `??` để in ra "Không có dữ liệu nhiệt độ".
+
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Asynchrony Support (Future, async, await)](https://dart.dev/language/async)
+> - [Dart Sound Null Safety](https://dart.dev/null-safety)
+> - [Dart Future.wait API reference](https://api.dart.dev/stable/dart-async/Future/wait.html)
+
+*Hoàn thành xuất sắc bài này là bạn đã đủ trình độ thao tác API thực tế trong Flutter rồi đó. Chiến thôi!*

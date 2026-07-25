@@ -92,13 +92,25 @@ String status = switch (rank) {
 };
 ```
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Lỗi kinh điển nhất là tạo những vòng lặp vô tận (infinite loop) trong `while` vì quên cập nhật biến điều kiện, hoặc lồng quá nhiều `if-else` (Nested if-else) làm code trông như một cái phễu khổng lồ. Hãy học cách Return sớm (Early return) để làm phẳng code!
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Vòng lặp vô tận (Infinite loop):** Lỗi kinh điển khi dùng `while` là quên cập nhật biến điều kiện bên trong vòng lặp, dẫn đến app treo cứng, nóng máy và crash do tràn bộ nhớ (Out of Memory). **Cách phòng tránh:** Luôn nhẩm lại logic tăng/giảm điều kiện trước khi chạy code vòng lặp.
+- **Mê cung If-Else (Nested If-Else):** Junior thường lồng 3, 4 tầng `if-else` khiến code trông như một cái phễu khổng lồ (Arrow anti-pattern), cực kỳ khó đọc. **Cách phòng tránh:** Học cách **Early Return** (Return sớm). Kiểm tra trường hợp lỗi/ngoại lệ và `return` ngay lập tức, để luồng code chính trở nên "phẳng" (không bị thụt lề quá nhiều).
+- **Ngộ nhận về `switch-case`:** Nhiều bạn nghĩ `switch` cũ kỹ và cồng kềnh. Ở Dart 3, `switch` đã trở thành một biểu thức vô cùng mạnh mẽ với Pattern Matching. Hãy cố gắng tận dụng nó để thay thế `if-else` dài dòng.
 
 ---
-### 🛠 Bài tập cho bạn
-1. Khai báo một List điểm số (số nguyên).
-2. Dùng `for-in` để duyệt qua mảng, nếu điểm >= 8 in ra "Giỏi", >= 5 in ra "Khá", còn lại in ra "Yếu".
-3. Dùng vòng lặp `while` để mô phỏng đếm ngược từ 10 về 0, khi bằng 0 in ra "Happy New Year!".
-4. Thử tính năng Switch Expression của Dart 3 (nếu bạn đang dùng Dart >= 3.0).
+### 🚀 Mini Pet Project: Trò chơi Vòng quay Nga ngẫu nhiên (Russian Roulette / Dice Roller)
 
-*Thực hành và cảm nhận sự "mượt mà" của Dart nhé! Gõ xong đưa mình review.*
+Ứng dụng vòng lặp và câu lệnh rẽ nhánh để làm một trò chơi mô phỏng đổ xúc xắc!
+
+**Yêu cầu:**
+1. Tạo file `dice_roller.dart`.
+2. Sử dụng thư viện `math` của Dart (`import 'dart:math';`) để tạo một số ngẫu nhiên từ 1 đến 6.
+3. Dùng vòng lặp `while` để mô phỏng việc người chơi đổ xúc xắc liên tục.
+4. Nếu đổ ra số 6: In ra "🎉 Chúc mừng! Bạn đã quay trúng ô Jackpot!" và kết thúc vòng lặp (`break`).
+5. Nếu ra số khác: Dùng `if-else` hoặc `switch` để in ra các câu an ủi khác nhau (VD: "Trượt rồi, thử lại nhé!") và tiếp tục lặp.
+
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Control Flow Official Docs](https://dart.dev/language/control-flow)
+> - [StackOverflow: How to generate random numbers in Dart?](https://stackoverflow.com/questions/43441588/how-to-generate-a-random-number-in-dart)
+
+*Tự code và chạy thử nhé. Bug ở đâu cứ réo mình!*

@@ -71,12 +71,24 @@ ships.forEach((ship) => print(ship));
 ships.forEach(print); // Truyền hàm print trực tiếp!
 ```
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Quên truyền ngoặc `{}` cho Named Parameters, hoặc truyền sai kiểu dữ liệu vào hàm. Ngoài ra, việc lạm dụng quá nhiều tham số (hơn 4 tham số) cho một hàm cũng là "red flag" (dấu hiệu code xấu). Nếu hàm cần quá nhiều tham số, hãy bọc chúng vào một Class.
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Quên ngoặc `{}` với Named Parameters:** Khi gọi hàm có tham số được đặt tên, nhiều bạn quên truyền tên tham số và truyền luôn giá trị, khiến trình biên dịch chửi bới. **Cách phòng tránh:** Luôn nhớ dấu hiệu nhận biết Named Parameter là tên biến đi kèm dấu `:` (vd: `name: 'Yoda'`).
+- **Hàm ôm đồm quá nhiều việc (God Function):** Đây là căn bệnh trầm kha. Hàm vừa fetch API, vừa xử lý logic, vừa update UI... Code phình to hàng trăm dòng, rất dễ sinh bug. **Cách phòng tránh:** Áp dụng nguyên tắc Single Responsibility (Đơn trách nhiệm). Một hàm chỉ làm ĐÚNG 1 việc. Nếu hàm quá 30 dòng, hãy cân nhắc tách nó ra.
+- **Truyền quá nhiều tham số:** Một hàm nhận tới 5-6 tham số là một "red flag" (dấu hiệu code bốc mùi). **Cách phòng tránh:** Bọc các tham số đó vào một Class riêng (vd: thay vì `createUser(name, age, email, phone, address)`, hãy dùng `createUser(User data)`).
 
 ---
-### 🛠 Bài tập cho bạn
-1. Viết một hàm `calculateBMI` nhận vào chiều cao và cân nặng dạng Named Parameters (`required`), trả về số `double`.
-2. Viết một Arrow function nhận vào số nguyên và trả về `true` nếu là số chẵn.
-3. Tạo một List các số nguyên. Dùng `.map()` kết hợp với Anonymous function để nhân đôi tất cả các số trong mảng và in ra.
+### 🚀 Mini Pet Project: Máy tính BMI thông minh (Smart BMI Calculator)
 
-*Tự code lại các loại function này để tay quen với cú pháp ngoặc nhọn `{}` nhé. Sẽ dùng cực nhiều trong Flutter!*
+Viết một chương trình nhỏ chuyên tính toán và đánh giá chỉ số khối cơ thể (BMI).
+
+**Yêu cầu:**
+1. Tạo file `bmi_calculator.dart`.
+2. Viết một hàm `calculateBMI` nhận vào chiều cao (m) và cân nặng (kg) dạng Named Parameters (`required`). Hàm này trả về số `double`.
+3. Viết một hàm khác tên là `evaluateBMI` nhận vào kết quả BMI, dùng Arrow Function `=>` kết hợp với toán tử 3 ngôi (hoặc if-else) để trả về chuỗi đánh giá: "Thiếu cân", "Bình thường", "Thừa cân".
+4. Trong hàm `main()`, tạo một List chứa thông tin của 3 người (dùng Map). Dùng vòng lặp `.forEach()` (hoặc Tear-off nếu có thể) để gọi hàm tính toán và in kết quả ra màn hình cho từng người.
+
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Functions Official Docs](https://dart.dev/language/functions)
+> - [Dart Anonymous functions & Tear-offs](https://dart.dev/language/functions#anonymous-functions)
+
+*Tính năng này cực kỳ sát với thực tế khi bạn làm các App sức khỏe. Bắt tay vào làm thôi!*

@@ -96,11 +96,26 @@ void main() {
 ```
 Các senior dev dùng Extension Methods rất nhiều để format chuỗi, ngày tháng, hay tùy biến giao diện mà không phải viết những file `Utils` cồng kềnh.
 
-> ⚠️ **Junior Pitfalls (Vấp váp thường gặp)**: Lạm dụng kế thừa (`extends`) thay vì sử dụng Composition (thành phần) hoặc Mixins. Điều này tạo ra một "Gia phả" class khổng lồ, rối rắm và khó bảo trì. Lời khuyên: Hãy ưu tiên Interface và Mixin trước khi nghĩ đến Kế thừa sâu.
+## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
+- **Lạm dụng kế thừa (Over-Inheritance):** Dấu hiệu của newbie là cố gắng ép mọi thứ vào cấu trúc kế thừa (Class A extends B extends C). Hậu quả là tạo ra một "gia phả" class khổng lồ, rối rắm, khi sửa class cha thì toàn bộ class con "vỡ trận" (Fragile Base Class problem). **Cách phòng tránh:** Ghi nhớ quy tắc vàng "Favor Composition over Inheritance" (Ưu tiên Thành phần hơn Kế thừa). Dùng Interface và Mixin để chia sẻ hành vi, thay vì bó buộc vào cây kế thừa.
+- **Hiểu lầm về Interface:** Dart không có từ khóa `interface`, khiến nhiều bạn lúng túng khi muốn định nghĩa một "hợp đồng". Đừng quên rằng `implements` có thể dùng với bất kỳ class nào.
+- **Hoang mang khi bị trùng tên hàm với Mixin:** Khi mixin nhiều tính năng (Diamond Problem), bạn dễ bối rối không biết hàm nào sẽ chạy. **Cách phòng tránh:** Luôn nhớ quy tắc Linearization của Dart: Thằng nào đứng cuối cùng bên phải từ khóa `with` sẽ nắm quyền ưu tiên cao nhất.
 
 ---
-### 🛠 Bài tập cho bạn
-1. Viết một `abstract class Vehicle` có hàm `startEngine()`.
-2. Tạo 2 mixin `ElectricMotor` và `PetrolMotor`, mỗi cái in ra một câu lệnh khởi động khác nhau.
-3. Tạo class `Tesla` extends `Vehicle` và implements/with sao cho hợp lý.
-4. Thử đặt 2 hàm cùng tên trong 2 mixin, rồi gán cho `Tesla` bằng từ khóa `with`, sau đó gọi hàm xem hàm của mixin nào chạy để tự kiểm chứng Linearization.
+### 🚀 Mini Pet Project: Hệ thống Nhà thông minh (Smart Home System)
+
+Dùng sức mạnh của OOP Nâng cao để thiết kế các thiết bị điện tử trong nhà thông minh!
+
+**Yêu cầu:**
+1. Tạo file `smart_home.dart`.
+2. Viết một `abstract class SmartDevice` có hàm bắt buộc `turnOn()` và `turnOff()`.
+3. Tạo các Mixin: `WifiConnected` (có hàm `connectWifi()`), `BluetoothEnabled` (có hàm `pairBluetooth()`).
+4. Khởi tạo 2 class: `SmartTV` và `SmartBulb` kế thừa từ `SmartDevice`.
+5. Cho `SmartTV` "mix" thêm cả Wifi và Bluetooth, còn `SmartBulb` thì chỉ mix Bluetooth.
+6. **Bonus Senior**: Tự viết một Extension Method cho class `String` có tên `toDeviceID()` để biến một tên chuỗi bất kỳ thành một mã ID viết hoa toàn bộ và có thêm đuôi `_DEV` (Vd: "tv" -> "TV_DEV").
+
+> 🔗 **Tài liệu tham khảo (Ref Docs):** 
+> - [Dart Mixins Official Docs](https://dart.dev/language/mixins)
+> - [Dart Extension Methods](https://dart.dev/language/extension-methods)
+
+*Bạn thấy đấy, Mixins sinh ra là để làm những trò này! Viết code và test xem nào!*
