@@ -1,83 +1,86 @@
-# Bài 1: Kiểm thử (Testing) & CI/CD - Vũ khí của Senior
+# Unit, Widget & Integration Tests: Kim Tự Tháp Testing
 
-Code chạy được chưa phải là code tốt. Code tốt là code chạy được và không bị hỏng khi thằng khác sửa! Để đạt được điều đó, ứng dụng bắt buộc phải có Automated Tests (Kiểm thử tự động).
+## 1. Giới thiệu: Không Test Không Phải Là Code!
+Rất nhiều Junior dev cảm thấy sợ viết Test vì "mất thời gian" và "chỉ chạy code thấy app lên là được". Nhưng khi dự án lớn, bạn sửa một dòng code ở màn hình Profile, màn hình Giỏ Hàng bỗng dưng crash. Đó là lúc bạn ước mình có viết Test.
+Testing trong Flutter được chia thành 3 mức độ (Kim tự tháp Testing):
+1. **Unit Test:** Rất nhanh, test 1 hàm, 1 class độc lập (Logic, UseCase). Số lượng nhiều nhất.
+2. **Widget Test:** Tốc độ trung bình, test UI của 1 hoặc nhiều widget mà không cần chạy app thật trên máy. (Test nút bấm có hiển thị đúng màu, có nhấn được không).
+3. **Integration Test:** Chậm nhất, test toàn bộ app trên máy ảo/máy thật, mô phỏng như người dùng đang bấm bấm vuốt vuốt. Số lượng ít nhất.
 
-## 1. Unit Test (Kiểm thử đơn vị)
-Test logic của những hàm nhỏ nhất (ví dụ: Validate email, tính tổng tiền, UseCase). Không dính dáng đến UI. Chạy cực kỳ nhanh.
+**Senior Detail:** Ở môi trường production, Integration Test thường được chạy trên các farm device (AWS Device Farm, Firebase Test Lab) để đảm bảo app không bị vỡ giao diện trên các kích thước màn hình khác nhau.
 
+---
+
+## 2. Lời khuyên Google/Dart Style Guide
+> "DO structure tests using `group` to group related tests."
+Sử dụng `group` giúp kết quả test in ra rõ ràng, dễ đọc hơn khi số lượng test case tăng lên.
+> "PREFER strict asserts in tests."
+
+---
+
+## 3. Nỗi đau Junior: Code ❌ SAI và ✅ ĐÚNG
+
+### Nỗi đau: Bơm quá nhiều thứ vào Widget Test
+**Ngộ nhận:** Newbie khi viết Widget Test thường gọi luôn `runApp(MyApp())` tức là test nguyên một cục to đùng chứa cả Route, BLoC, DB... dẫn đến lỗi ngập mặt vì thiếu dependencies.
+
+❌ **SAI (Junior Pitfall):**
 ```dart
-// file: test/utils/email_validator_test.dart
-import 'package:flutter_test/flutter_test.dart';
-
-void main() {
-  group('Email Validator Tests', () {
-    test('Email đúng định dạng phải trả về true', () {
-      final result = isValidEmail('luke@jedi.com');
-      expect(result, true);
-    });
-
-    test('Email sai định dạng phải trả về false', () {
-      final result = isValidEmail('darthvader.com');
-      expect(result, false);
-    });
-  });
-}
-```
-> 🧠 **Senior Detail - Mocks (Mocking)**: Khi test một UseCase có gọi API, bạn KHÔNG ĐƯỢC PHÉP gọi API thật. Hãy dùng thư viện `mockito` hoặc `mocktail` để tạo ra một Repository giả (MockRepository), lập trình cho nó trả về data giả và kiểm tra xem UseCase có xử lý đúng data đó không.
-
-## 2. Widget Test (Kiểm thử UI)
-Thay vì bấm tay trên máy ảo, Flutter cung cấp Widget Test để tạo ra một môi trường giả lập render UI ngay trong terminal. Rất nhanh và nhẹ.
-
-```dart
-testWidgets('Bấm nút tăng số lượng giỏ hàng', (WidgetTester tester) async {
-  // Bơm widget vào môi trường test
-  await tester.pumpWidget(const MyApp());
-
-  // Tìm nút Add và verify số lượng ban đầu là 0
-  expect(find.text('0'), findsOneWidget);
-  
-  // Giả lập thao tác bấm nút
-  await tester.tap(find.byIcon(Icons.add));
-  
-  // Bắt buộc phải gọi pump để UI render lại frame mới
-  await tester.pump(); 
-
-  // Verify số đã tăng lên 1
-  expect(find.text('1'), findsOneWidget);
+testWidgets('Test nút login', (WidgetTester tester) async {
+  // Lỗi! MyApp cần rất nhiều Provider, Route, Theme mà ta chưa thiết lập
+  await tester.pumpWidget(MyApp()); 
+  await tester.tap(find.text('Login'));
 });
 ```
 
-## 3. Integration Test (Kiểm thử tích hợp)
-Kiểm thử toàn bộ luồng (flow) như một người dùng thật trên thiết bị thực (Simulator/Emulator). Rất chậm, nhưng cực kỳ chính xác. Thường chạy vào ban đêm qua CI/CD.
-
-## 4. CI/CD với GitHub Actions
-Senior không bao giờ tự build file APK và gửi qua Zalo/Slack cho sếp. Họ cấu hình CI/CD. Cứ mỗi lần push code lên nhánh `main`:
-1. CI tự động chạy `flutter analyze` để kiểm tra lỗi cú pháp.
-2. Tự động chạy toàn bộ Unit Test.
-3. Nếu tất cả đều xanh (Pass), tự động build APK và đẩy lên Firebase App Distribution hoặc TestFlight cho Tester tải về.
-
-## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
-- **"Test tốn thời gian, code cho nhanh còn kịp deadline":** Hậu quả là sau 3 tháng, số lượng bug sinh ra còn tốn nhiều thời gian fix hơn cả việc viết test. **Cách phòng tránh:** Tập thói quen viết Unit Test cho những logic kinh doanh lõi, phức tạp (như giỏ hàng, thanh toán).
-- **Hardcode kết quả test:** Sửa code test sao cho nó Pass thay vì sửa code thật bị lỗi. Đây là tự lừa dối bản thân!
-- **Sợ Mocking:** Mới học test thường rất sợ khái niệm Dependency Injection và Mocking vì nó rối. Nhưng nếu không dùng Mock, khi API sập, Unit Test của bạn cũng fail theo dù code bạn không sai. **Cách phòng tránh:** Ép bản thân học sử dụng `mocktail`. Nó dễ hơn bạn tưởng.
+✅ **ĐÚNG (Senior Way - Bơm widget cô lập):**
+Chỉ test đúng widget cần test, bọc nó bằng `MaterialApp` để cung cấp đủ môi trường UI cơ bản (Theme, Direction).
+```dart
+testWidgets('Test nút login chỉ hiển thị đúng', (WidgetTester tester) async {
+  // Bọc vào MaterialApp để chạy độc lập
+  await tester.pumpWidget(const MaterialApp(
+    home: Scaffold(
+      body: LoginButton(),
+    ),
+  ));
+  
+  expect(find.text('Login'), findsOneWidget);
+  await tester.tap(find.text('Login'));
+  await tester.pumpAndSettle(); // Chờ animation kết thúc
+});
+```
 
 ---
+
+## 4. 🐛 Thử Thách Gỡ Lỗi (Debugging Challenge)
+
+Một bạn Junior viết Widget test kiểm tra Loading Indicator sau khi bấm nút submit, nhưng test cứ báo lỗi: `A Timer is still pending even after the widget tree was disposed.`
+
+```dart
+testWidgets('Test loading state', (WidgetTester tester) async {
+  await tester.pumpWidget(MaterialApp(home: AsyncButton()));
+  
+  await tester.tap(find.byType(ElevatedButton));
+  
+  // Kiểm tra thấy CircularProgressIndicator
+  expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  
+  // Test dừng ở đây và sinh lỗi!
+});
+```
+**Gợi ý:** Khi một widget đang hiển thị loading (thường có một Future hoặc Animation đang chạy ngầm), bạn không thể cứ thế mà kết thúc Test. Flutter đòi hỏi Test phải clean up sạch sẽ mọi trạng thái đang lơ lửng. Hàm `tester.pumpAndSettle()` có tác dụng gì? Hoặc bạn cần đợi Future hoàn thành?
+
 ---
-### 🚀 Mini Pet Project: Bộ Test-Suite Validation (TDD Basic)
 
-**Yêu cầu:**
-1. Tạo file `password_validator.dart`. Viết hàm `isValidPassword` TRỐNG (chỉ return false).
-2. Viết file `password_validator_test.dart` áp dụng **Test-Driven Development (TDD)**:
-   - Test 1: Mật khẩu dưới 8 ký tự -> Phải fail (trả về false).
-   - Test 2: Mật khẩu không có chữ hoa -> Phải fail.
-   - Test 3: Mật khẩu không có số -> Phải fail.
-   - Test 4: Mật khẩu "SuperSecret123" -> Phải pass (trả về true).
-3. Chạy test -> Test sẽ fail toàn tập (Red).
-4. Quay lại file code thật, viết logic xử lý Regex để thỏa mãn toàn bộ rules.
-5. Chạy lại test -> Xanh mướt (Green).
+## 5. 🚀 Mini Pet Project
 
-> 🔗 **Tài liệu tham khảo (Ref Docs):**
-> - [Flutter Testing Documentation](https://docs.flutter.dev/testing/overview)
-> - [Unit Testing Fundamentals](https://docs.flutter.dev/cookbook/testing/unit/introduction)
+**Yêu cầu:** 
+Tạo một app "Todo" siêu nhỏ gọn.
+1. Viết **Unit Test** cho class `TodoBloc` hoặc `TodoViewModel`: Thêm 1 item, đếm số lượng trả về 1.
+2. Viết **Widget Test** cho `TodoListScreen`: Cung cấp mảng có 3 todos giả, verify rằng giao diện hiển thị đúng 3 cái thẻ `ListTile` trên màn hình.
+3. Viết **Integration Test** (sử dụng thư viện `integration_test`): Chạy app, nhập vào TextField chữ "Ăn sáng", bấm nút Add, verify cuộn màn hình và thấy chữ "Ăn sáng".
 
-*TDD (Test-Driven Development) là một cảnh giới cao mà ít Developer dám bước vào. Nhưng một khi quen, bạn sẽ nghiện cảm giác "Màu xanh hi vọng" của Console!*
+---
+
+## Tham khảo
+- [Flutter Testing](https://flutter.dev/docs/testing)
+- [integration_test package](https://docs.flutter.dev/testing/integration-tests)

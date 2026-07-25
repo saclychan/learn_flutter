@@ -147,6 +147,6 @@ Viết một chương trình nhỏ chuyên tính toán và đánh giá chỉ s�
 > - [Dart Anonymous functions & Tear-offs](https://dart.dev/language/functions#anonymous-functions)
 > 
 > 🎓 **Bài giải mẫu (Sample Solution):**
-> Nếu bạn bí ý tưởng hoặc muốn xem code chuẩn Senior viết như thế nào, hãy tham khảo [bmi_calculator.sample.dart](bmi_calculator.sample.dart).
+> Nếu bạn bí ý tưởng hoặc muốn xem code chuẩn Senior viết như thế nào, hãy tham khảo [bmi_calculator.sample.dart](../../../../pets/tuts/01_Fundamentals/Dart/03_functions.md/bmi_calculator.sample.dart).
 
 *Tính năng này cực kỳ sát với thực tế khi bạn làm các App sức khỏe. Bắt tay vào làm thôi!*

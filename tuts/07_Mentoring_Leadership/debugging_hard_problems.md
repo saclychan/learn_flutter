@@ -1,41 +1,87 @@
-# Debugging: Giải quyết những ca "Bệnh Hiểm Nghèo"
+# Debugging Hard Problems: Gỡ Rối Những Ca Khó Nhằn
 
-Junior thường hỏi: "Tại sao lỗi?". Senior hỏi: "Bằng chứng ở đâu?".
-Kỹ năng debug phân định đẳng cấp của một lập trình viên.
+## 1. Giới thiệu: Phép Màu của Kỹ Năng Debug
+Ai cũng có thể gõ code khi mọi thứ suôn sẻ. Nhưng khi app crash liên tục trên máy khách hàng, không hiện lỗi trên log, và không thể tái hiện trên máy dev — đó là lúc trình độ của Senior lên tiếng.
+Debugging không phải là đoán mò. Nó là khoa học. Kỹ năng chia để trị (Divide and Conquer), đọc Stacktrace, hiểu cơ chế GC (Garbage Collection) và Threading là những vũ khí tối thượng.
 
-## 1. Phương pháp "Chia để trị" (Binary Search Debugging)
-Khi màn hình bị trắng xóa hoặc báo một lỗi cực kỳ vô nghĩa (như lỗi engine C++), đừng hoảng.
-- **Comment Code:** Comment 50% số lượng widget trên màn hình lại. Chạy thử.
-- Nếu hết lỗi -> Lỗi nằm trong 50% vừa bị comment.
-- Tiếp tục mở 25%, rồi 12.5%... Bạn sẽ khoanh vùng chính xác dòng code gây lỗi chỉ trong vòng 3 phút, thay vì ngồi nhìn màn hình hàng giờ.
-
-## 2. Nghệ thuật đọc Stack Trace (Dòng chữ đỏ còi)
-- Đừng bao giờ đọc từ trên xuống dưới (đỉnh thường là lỗi hệ thống `framework.dart`).
-- **Hãy tìm dòng chữ xanh / tên file CỦA BẠN** gần nhất. Đó là điểm bắt nguồn của thảm họa.
-- Nếu lỗi là `LateInitializationError`: Chắc chắn bạn đã gọi một biến `late` trước khi gán cho nó giá trị.
-- Nếu lỗi là `RenderBox was not laid out`: Lỗi bố cục kinh điển, thường do nhét một `ListView` vào trong một `Column` mà quên bọc bằng `Expanded`.
-
-## 3. "Con bọ" (Breakpoints) trong IDE
-Đừng dùng `print()` nữa.
-- Bấm vào lề trái của VSCode/Android Studio để đặt chấm đỏ (Breakpoint).
-- Chạy app chế độ Debug (F5). Code sẽ "dừng hình" ngay tại dòng đó.
-- Bạn có thể rê chuột vào từng biến để xem giá trị chính xác của chúng, danh sách mảng có bao nhiêu phần tử tại TÍCH TẮC ĐÓ. Thậm chí dùng Debug Console để chạy thử code nháp bằng giá trị hiện tại.
-
-## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
-- **Hội chứng "Đoán mò":** Thay vì đọc dòng lỗi màu đỏ, Junior nhìn chằm chằm vào code rồi đoán "Chắc là do dòng này" và sửa bừa, hy vọng nó chạy lại. Đoán sai lại sửa tiếp. **Cách phòng tránh:** Dừng lại! Đọc thật kỹ dòng đầu tiên và dòng cuối cùng của Stack Trace. Tìm tên file do chính mình tạo ra trong đống màu đỏ đó.
-- **Nghĩ rằng Debugger chỉ dành cho siêu nhân:** Nhiều bạn code cả năm trời nhưng không biết đặt Breakpoint là gì, suốt ngày `print("1")`, `print("2")`. Khi gặp biến Map lồng Map thì bất lực. **Cách phòng tránh:** Bắt buộc phải học cách dùng công cụ Debug (F5) của IDE.
+**Senior Detail:** Đừng bao giờ in ra lỗi bằng `print(e)`. Hãy dùng `log()` từ `dart:developer` hoặc Firebase Crashlytics để đính kèm toàn bộ Stacktrace. Nếu không có Stacktrace, bạn đang mò kim đáy bể.
 
 ---
-### 🚀 Mini Pet Project: Thợ Săn Lỗi (Bug Hunter)
 
-**Yêu cầu:**
-1. Viết một đoạn code có lỗi cực kỳ thâm độc: Tạo một biến `late String name;`.
-2. Trong hàm `build`, hiển thị `Text(name)` nhưng lại KHÔNG khởi tạo giá trị cho `name` trong `initState`.
-3. Chạy app (nó sẽ văng màn hình đỏ).
-4. Không dùng lệnh `print`. Hãy sử dụng thanh Debug, tìm đọc bảng **Stack Trace**, truy vết đúng dòng code gọi biến `name` trước khi nó được gán giá trị.
+## 2. Lời khuyên Google/Dart Style Guide
+> "AVOID catching `Error` or types that implement it."
+Trong Dart, `Exception` là những ngoại lệ mà bạn dự tính trước (VD: Lỗi mạng `SocketException`), bạn CÓ THỂ catch và xử lý. Còn `Error` (như `RangeError`, `OutOfMemoryError`) là những lỗi nghiêm trọng do code sai (bug), bạn KHÔNG NÊN catch nó mà hãy để app crash rồi vào log sửa tận gốc bug đó.
 
-> 🔗 **Tài liệu tham khảo (Ref Docs):**
-> - [Flutter Debugging Guide](https://docs.flutter.dev/testing/debugging)
-> - [VS Code Debugging Features](https://code.visualstudio.com/docs/editor/debugging)
+---
 
-*Một khi đã biết xài Breakpoint, bạn sẽ thấy `print()` thật sự là đồ đá!*
+## 3. Nỗi đau Junior: Code ❌ SAI và ✅ ĐÚNG
+
+### Nỗi đau: Bắt mọi lỗi và... ỉm đi (Swallowing Exceptions)
+**Ngộ nhận:** Newbie rất sợ app bị văng (crash) nên thường bọc `try...catch` ở mọi nơi, và chừa phần catch... trống trơn!
+
+❌ **SAI (Junior Pitfall):**
+```dart
+Future<void> syncData() async {
+  try {
+    await database.updateRecords();
+    await api.pushToServer();
+  } catch (e) {
+    // Không làm gì cả! Hoặc chỉ print nhẹ.
+    // Hậu quả: Dữ liệu hỏng nhưng app vẫn chạy như không có chuyện gì, không ai biết để fix.
+  }
+}
+```
+
+✅ **ĐÚNG (Senior Way):**
+Xử lý đúng loại Exception cần thiết. Nếu không xử lý được, hãy rethrow (ném lại) hoặc log lên Crashlytics.
+```dart
+Future<void> syncData() async {
+  try {
+    await database.updateRecords();
+    await api.pushToServer();
+  } on SocketException catch (e) {
+    // Chỉ xử lý lỗi mạng (Báo UI hiện snackbar mất mạng)
+    emit(SyncOfflineState());
+  } catch (e, stackTrace) {
+    // Các lỗi không lường trước: Báo cáo Crashlytics và ném tiếp
+    FirebaseCrashlytics.instance.recordError(e, stackTrace);
+    rethrow; 
+  }
+}
+```
+
+---
+
+## 4. 🐛 Thử Thách Gỡ Lỗi (Debugging Challenge)
+
+Bạn nhận được một ticket khẩn: "Màn hình Chat đôi khi bị đơ cứng, không thể cuộn, cũng không thể ấn nút". Bạn vào check log không thấy app báo crash gì. 
+Bạn nhìn vào đoạn code parse JSON từ Socket trả về:
+
+```dart
+void onMessageReceived(String payload) {
+  // Payload này rất lớn, chứa danh sách hàng ngàn tin nhắn
+  final Map<String, dynamic> data = jsonDecode(payload); 
+  
+  // Update state UI
+  setState(() {
+    messages.addAll(parseMessages(data));
+  });
+}
+```
+**Vấn đề ở đâu?** Nếu app không crash mà bị đơ (Freeze), thủ phạm thường là gì? `jsonDecode` là hàm đồng bộ (synchronous). Khi parse string rất lớn, nó sẽ block (chặn) điều gì? Làm sao để sửa lỗi này mà không cần thư viện ngoài?
+
+---
+
+## 5. 🚀 System Design Challenge
+
+**Yêu cầu:** Thiết lập một cơ chế "Global Error Handler" (Bắt mọi lỗi của app) trong hàm `main()`.
+Thay vì để app hiện màn hình xám xịt báo lỗi (Red Screen of Death) khi có exception chưa được catch, hãy cấu hình `FlutterError.onError` và `PlatformDispatcher.instance.onError` để:
+1. Ghi log lỗi ra console đẹp đẽ.
+2. Hiển thị một giao diện tự thiết kế (Fallback UI) thân thiện thông báo "Đã có lỗi bất ngờ, xin thử lại sau" thay vì màn hình đỏ chữ vàng doạ người dùng.
+3. Thử nghiệm bằng cách quăng một `Exception('Test')` ngẫu nhiên trong 1 button.
+
+---
+
+## Tham khảo
+- [Flutter: Error handling](https://docs.flutter.dev/testing/errors)
+- [dart:developer log function](https://api.flutter.dev/flutter/dart-developer/log.html)

@@ -1,82 +1,120 @@
-# Bài 1: Clean Architecture - Trái tim của Ứng dụng quy mô lớn
+# Kiến Trúc Flutter: Từ Số 0 Đến Clean Architecture
 
-Khi app có trên 20 màn hình và được bảo trì bởi nhiều team, nếu không có kiến trúc rõ ràng, app sẽ trở thành một "bát phở trộn" (Spaghetti code) không thể gỡ nổi. Clean Architecture (Robert C. Martin) là giải pháp tối thượng.
+## 1. Giới thiệu: Tại sao MVC lại "chết" ở Flutter?
+Khi mới học lập trình, bạn có thể đã nghe rất nhiều về MVC (Model - View - Controller). Vậy tại sao trong Flutter, MVC lại hiếm khi được sử dụng?
+Flutter là một framework **declarative UI**. Bạn không thể thay đổi UI bằng cách lấy tham chiếu của một widget và gọi method cập nhật trạng thái (giống như `textView.setText()` trong Android hay `document.getElementById` trong DOM). Thay vào đó, bạn phải rebuild lại toàn bộ widget tree với state mới.
+MVC thường dựa vào Controller để điều khiển View, nhưng trong Flutter, View phản ứng lại State. Việc cố gắng ép MVC vào Flutter thường dẫn đến các Controller khổng lồ, logic dính chặt vào vòng đời của UI, khó test và khó bảo trì.
 
-## 1. Clean Architecture là gì?
-Nguyên tắc cốt lõi: **Sự phụ thuộc (Dependency) chỉ được trỏ vào trong**. Lớp bên trong không bao giờ được biết về sự tồn tại của lớp bên ngoài.
-Nó chia app thành 3 lớp chính:
-- **Presentation (UI)**: Chứa Widget, State Management (Riverpod/BLoC). (Bên ngoài cùng)
-- **Domain**: Chứa Business Logic cốt lõi (Entities, Use Cases, Repository Interfaces). (Bên trong cùng - Độc lập hoàn toàn với Flutter).
-- **Data**: Chứa việc gọi API, Data Models, Database cục bộ.
+Thay vào đó, các kiến trúc dựa trên State Management (như BLoC, Riverpod, hay MVVM) ra đời. Tuy nhiên, khi dự án lớn lên, chỉ State Management là không đủ, chúng ta cần **Clean Architecture**.
 
-## 2. Lớp Domain (Trái tim)
-Hoàn toàn thuần Dart, không có bất kỳ import nào từ `flutter/material.dart`. 
-Bạn sẽ định nghĩa các **Entities** (ví dụ `User`, `Post`) và các **Repository Interfaces**.
+### Tại sao Clean Architecture lại cần thiết nhưng lại "cồng kềnh"?
+Clean Architecture chia app thành các layer (thường là Domain, Data, Presentation) độc lập với nhau, giao tiếp qua interface.
+- **Cần thiết:** Giúp thay đổi Database, API hay State Management mà không ảnh hưởng tới Business Logic. Giúp code dễ test hơn bao giờ hết.
+- **Cồng kềnh:** Để in ra một dòng chữ từ API, bạn phải tạo Model, Entity, Mapper, Repository Interface, Repository Implementation, UseCase, và State/BLoC. 
 
+**Senior Detail:** Đừng dùng Clean Architecture cho các dự án nhỏ, prototype hay MVP có thời gian ngắn. Clean Architecture tỏa sáng khi bạn làm việc trong team lớn, dự án kéo dài nhiều năm, và logic nghiệp vụ phức tạp.
+
+---
+
+## 2. Lời khuyên Google/Dart Style Guide
+> "Use `final` for variables that are not reassigned."
+Trong Clean Architecture, các UseCase, Repository, và State của bạn luôn nên là immutable. Việc dùng `final` giúp tránh những bug do mutate state không kiểm soát được.
+> "Do prefer starting function or method comments with third-person verbs." (VD: Returns the current user...)
+
+---
+
+## 3. Nỗi đau Junior: Code ❌ SAI và ✅ ĐÚNG
+
+### Nỗi đau 1: Để Business Logic trong UI
+**Ngộ nhận:** Newbie thường viết thẳng logic gọi API hoặc tính toán vào trong `onPressed` của button.
+**Hậu quả:** Không thể tái sử dụng logic, UI giật lag khi xử lý nặng, không thể viết unit test.
+
+❌ **SAI (Junior Pitfall):**
 ```dart
-// domain/entities/user.dart
-class User {
-  final String id;
-  final String name;
-  User({required this.id, required this.name});
-}
-
-// domain/repositories/user_repository.dart
-// Lưu ý: Chỉ là Interface (abstract class), không có logic gọi API ở đây!
-abstract class UserRepository {
-  Future<User> getUserProfile();
-}
+ElevatedButton(
+  onPressed: () async {
+    // Gọi API trực tiếp trong UI
+    setState(() => isLoading = true);
+    final response = await http.get(Uri.parse('https://api.example.com/user'));
+    final user = User.fromJson(jsonDecode(response.body));
+    if (user.age > 18) {
+      // Business logic
+      Navigator.pushNamed(context, '/home');
+    }
+    setState(() => isLoading = false);
+  },
+  child: Text('Login'),
+)
 ```
 
-## 3. Lớp Data (Cơ bắp)
-Lớp này thực hiện (implements) cái hợp đồng mà Domain yêu cầu.
-Nó chứa các **Models** (có extends từ Entities để lấy các hàm `fromJson`) và các **Data Sources** (Dio, Hive).
+✅ **ĐÚNG (Senior Way - Clean Architecture):**
+Tách logic ra UseCase và gọi qua Presentation Layer (ví dụ BLoC).
+```dart
+// Domain Layer - UseCase
+class LoginUseCase {
+  final UserRepository repository;
+  LoginUseCase(this.repository);
+
+  Future<bool> execute(String token) async {
+    final user = await repository.getUser(token);
+    return user.age > 18; // Business logic cô lập, hoàn toàn testable
+  }
+}
+
+// Presentation Layer
+ElevatedButton(
+  onPressed: () {
+    context.read<LoginBloc>().add(LoginSubmittedEvent());
+  },
+  child: Text('Login'),
+)
+```
+
+### Nỗi đau 2: Nhầm lẫn giữa Model và Entity
+❌ **SAI:** Dùng chung Data Model (có chứa logic parse JSON) cho toàn bộ app, kể cả truyền vào UI.
+✅ **ĐÚNG:** `Model` ở Data layer (parse JSON), `Entity` ở Domain layer (chỉ chứa data thuần, không biết JSON là gì). Dùng Mapper để chuyển đổi.
+
+---
+
+## 4. 🐛 Thử Thách Gỡ Lỗi (Debugging Challenge)
+
+Dưới đây là một đoạn code Repository Implementation. Nó chạy được nhưng có một lỗi ngầm về thiết kế kiến trúc. Bạn hãy tìm và sửa nó!
 
 ```dart
-// data/repositories/user_repository_impl.dart
-import '../../domain/repositories/user_repository.dart';
-
+// Data Layer
 class UserRepositoryImpl implements UserRepository {
-  final UserRemoteDataSource remoteDataSource; // API
-  final UserLocalDataSource localDataSource;   // Cache
+  final http.Client client;
+  final SharedPreferences prefs;
 
-  UserRepositoryImpl(this.remoteDataSource, this.localDataSource);
+  UserRepositoryImpl(this.client, this.prefs);
 
   @override
-  Future<User> getUserProfile() async {
-    if (await isNetworkConnected()) {
-      final userModel = await remoteDataSource.fetchUser();
-      // Cache lại
-      localDataSource.cacheUser(userModel);
-      return userModel; // UserModel kế thừa từ User Entity
-    } else {
-      return localDataSource.getCachedUser();
-    }
+  Future<UserEntity> getUser() async {
+    final response = await client.get(Uri.parse('https://api.com/user'));
+    final userModel = UserModel.fromJson(response.body);
+    
+    // Ghi đè token thẳng vào DB ở đây?
+    await prefs.setString('token', userModel.token); 
+    
+    return userModel.toEntity();
   }
 }
 ```
-> 🧠 **Senior Detail - Single Source of Truth (SSOT)**: Repository Pattern ở đây đóng vai trò che giấu hoàn toàn việc lấy data từ API hay từ Local Cache. Tầng UI chỉ gọi `getUserProfile()`, nó không cần (và không được phép) biết data đến từ đâu.
-
-## 4. Lớp Presentation (Gương mặt)
-Sử dụng Riverpod (hoặc BLoC) để lấy data từ UseCases/Repository (thông qua Dependency Injection) và đẩy ra UI. UI hoàn toàn ngu ngốc (Dumb UI), nó chỉ nhận State và vẽ.
-
-## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
-- **Nhầm lẫn Model và Entity:** Nhiều bạn lười nên dùng thẳng cái Model chứa hàm `fromJson` (của lớp Data) ném thẳng lên giao diện và gọi nó là Entity. **Hậu quả:** Nếu API đổi tên trường (ví dụ `user_name` thành `fullName`), bạn phải sửa lại toàn bộ giao diện! **Cách phòng tránh:** Entity ở lớp Domain mới là thứ giao diện sử dụng, nó độc lập với cấu trúc JSON của API. Lớp Data có trách nhiệm map từ Model sang Entity.
-- **Để logic kinh doanh ở UI:** Tính toán thuế, giỏ hàng ngay trong hàm `onPressed`. **Cách phòng tránh:** Chuyển tất cả logic tính toán này vào các **Use Cases** ở lớp Domain. UI chỉ gọi `ExecuteCheckoutUseCase`.
-- **Over-engineering (Làm quá lố):** Áp dụng Clean Architecture cho cái app Todo 1 màn hình. Điều này khiến mất 3 ngày tạo file mà code thực tế chỉ mất 2 tiếng. **Cách phòng tránh:** Chỉ áp dụng Clean Architecture khi dự án có quy mô từ vừa đến lớn, cần maintain lâu dài và làm việc nhóm. App nhỏ chỉ cần chia thư mục theo Features (Feature-first) kết hợp Repository pattern là đủ.
+**Gợi ý:** Repository nên có trách nhiệm gì? Việc lưu token nên nằm ở Repository hay ở UseCase quản lý luồng đăng nhập?
 
 ---
+
+## 5. 🚀 System Design Challenge
+
+**Yêu cầu:** Thiết kế sơ đồ (Flow) cho tính năng "Giỏ hàng offline-first" sử dụng Clean Architecture.
+1. Khi có mạng: Lấy giỏ hàng từ API, lưu vào Local DB (SQflite/Hive).
+2. Khi mất mạng: Lấy giỏ hàng từ Local DB.
+3. Khi thêm vào giỏ offline: Lưu Local DB, đánh dấu cờ `sync = false`. Khi có mạng tự động sync lên Server.
+
+Bạn sẽ chia các Model, Entity, UseCase như thế nào? Repository interface của bạn sẽ trông ra sao? Hãy code nháp thử file `CartRepository.dart` và `SyncCartUseCase.dart`!
+
 ---
-### 🚀 Mini Pet Project: Bộ khung Clean Architecture (Đăng nhập)
 
-**Yêu cầu:**
-1. Tạo cấu trúc thư mục Feature-first: `features/auth/domain`, `features/auth/data`, `features/auth/presentation`.
-2. **Domain:** Tạo file `user_entity.dart` (chứa `User` class đơn giản). Tạo file `auth_repository.dart` (chỉ là abstract class có hàm `login()`).
-3. **Data:** Tạo file `auth_repository_impl.dart` implement `AuthRepository`. Viết code hardcode trả về `User("admin", "Admin Token")` nếu user nhập đúng "admin/123", sai quăng exception.
-4. **Presentation:** Tạo UI Đăng nhập, truyền class Repository trên vào và gọi hàm `login`.
-
-> 🔗 **Tài liệu tham khảo (Ref Docs):**
-> - [Clean Architecture - Resocoder Guide](https://resocoder.com/2019/08/27/flutter-tdd-clean-architecture-course-1-explanation-project-structure/)
-> - [Very Good Ventures - Flutter Architecture](https://verygood.ventures/blog/very-good-flutter-architecture)
-
-*Đừng để bộ khung đe dọa bạn. Hiểu nguyên lý luân chuyển Data -> Domain -> UI là bạn đã làm chủ nó rồi!*
+## Tham khảo
+- [ResoCoder Clean Architecture TDD](https://resocoder.com/2019/08/27/flutter-tdd-clean-architecture-course-1-explanation-project-structure/)
+- [Effective Dart](https://dart.dev/guides/language/effective-dart)

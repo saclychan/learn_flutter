@@ -21,13 +21,13 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 - [ ] Bài 6: Bất đồng bộ & Null Safety - *Chưa học*
 
 ### 🟡 02_UI_Widgets (Giao diện)
-- [ ] Bài 1: Widget căn bản
-- [ ] Bài 2: Stateless vs Stateful
-- [ ] Bài 3: Bố cục (Layout)
-- [ ] Bài 4: Forms & Validation
-- [ ] Bài 5: Navigation & Routing
-- [ ] Bài 6: Responsive & Adaptive UI
-- [ ] Bài 7: Animations Masterclass
+- [x] Bài 1: Widget căn bản
+- [x] Bài 2: Stateless vs Stateful
+- [x] Bài 3: Bố cục (Layout)
+- [x] Bài 4: Forms & Validation
+- [x] Bài 5: Navigation & Routing
+- [x] Bài 6: Responsive & Adaptive UI
+- [x] Bài 7: Animations Masterclass
 
 *(Các module tiếp theo sẽ được cập nhật tiến độ khi học đến: State Management, Networking, Clean Architecture, Testing, Firebase...)*
 

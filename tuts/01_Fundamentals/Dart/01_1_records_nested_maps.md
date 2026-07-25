@@ -118,4 +118,4 @@ Map<String, dynamic> apiResponse = {
 4. Trong hàm `main()`, gọi hàm `parseServerData`, sau đó dùng vòng lặp `for-in` kết hợp với **Record Destructuring** để in ra màn hình cảnh báo nếu server nào có `cpu > 80.0`.
 
 > 🎓 **Bài giải mẫu (Sample Solution):**
-> [api_parser.sample.dart](api_parser.sample.dart) (Chỉ xem khi đã thực sự bí nhé!)
+> [api_parser.sample.dart](../../../../pets/tuts/01_Fundamentals/Dart/01_1_records_nested_maps.md/api_parser.sample.dart) (Chỉ xem khi đã thực sự bí nhé!)

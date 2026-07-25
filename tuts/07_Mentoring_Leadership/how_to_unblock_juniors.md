@@ -1,45 +1,94 @@
-# Bài 3: Nghệ thuật Gỡ rối cho Junior (How to unblock Juniors)
+# Unblocking Juniors: Nghệ Thuật Dẫn Dắt Đội Ngũ
 
-Lãnh đạo không phải là người làm thay tất cả mọi việc. Lãnh đạo là người tạo ra môi trường để người khác tự giải quyết được việc của họ. Khi một Junior/Middle "bị kẹt" (blocked), cách bạn gỡ rối sẽ quyết định họ có trưởng thành hay không.
+## 1. Giới thiệu: Từ Thợ Code Sang Người Trưng Bày
+Làm Senior không chỉ là việc code giỏi. Sức mạnh thực sự của một Senior/Mentor là khả năng làm cho những người xung quanh giỏi lên (Force Multiplier). Khi một Junior bị "kẹt" (blocked) cả ngày trời ở một bug, việc bạn bay vào gõ rào rào fix trong 5 phút và đi ra KHÔNG GIÚP ÍCH gì cho họ. Lần sau họ sẽ lại kẹt.
+Nhiệm vụ của bạn là **Unblock**: Khai thông bế tắc bằng cách đặt câu hỏi, hướng dẫn họ cách tự tư duy tìm ra giải pháp.
 
-## 1. Nguyên tắc tối thượng: KHÔNG CODE HỘ!
-Khi Junior chạy đến: "Anh ơi, màn hình này bị trắng", phản xạ tự nhiên của một Dev giỏi là cầm lấy chuột và gõ rào rào 3 dòng code để fix xong trong 10 giây.
-**Hậu quả:** Bạn trở thành "Cái phao cứu sinh" độc hại. Lần sau gặp lỗi y hệt, họ lại đến tìm bạn. Họ không học được gì cả.
-
-## 2. Kỹ thuật "Vịt cao su" (Rubber Duck Debugging)
-Bắt Junior phải giải thích lại toàn bộ luồng chạy của code thành tiếng, dòng này làm gì, dòng kia làm gì.
-Rất nhiều trường hợp, trong lúc cố gắng giải thích cho bạn nghe, họ sẽ tự thốt lên: "Á, chỗ này gọi hàm mà quên `await`!". Bạn chưa cần nói một chữ nào, vấn đề đã được giải quyết.
-
-## 3. Hỏi ngược (Socratic Method)
-Đừng đưa ra câu trả lời. Hãy đưa ra câu hỏi.
-- Junior: "Anh ơi, cái danh sách này cuộn bị giật quá."
-- Senior: "Em đang dùng widget gì để tạo danh sách?"
-- Junior: "Em dùng `SingleChildScrollView` bọc `Column` chứa 1000 items ạ."
-- Senior: "Em thử tìm hiểu xem sự khác nhau giữa cách render của `SingleChildScrollView` và `ListView.builder` là gì không?"
-- Junior: (Google 5 phút) -> "À, ListView.builder nó chỉ render những cái trên màn hình (lazy load). Em hiểu rồi để em sửa!"
-
-## 4. Xây dựng văn hóa "Bằng chứng đâu?"
-Trước khi cho phép Junior hỏi một câu, hãy yêu cầu họ chuẩn bị sẵn 3 thứ:
-1. Lỗi là gì? (Log / Màn hình chụp).
-2. Em đã thử những cách nào rồi? (Tránh việc cứ lỗi là hỏi mà không chịu suy nghĩ).
-3. Em nghĩ nguyên nhân cốt lõi là do phần nào?
-
-## 🛑 Những nỗi đau và ngộ nhận của Senior mới nhậm chức
-- **Thiếu kiên nhẫn:** Senior thường bực mình vì "cái lỗi bé tí thế mà cũng hỏi". **Cách phòng tránh:** Hãy nhớ lại 3 năm trước, lúc bạn mới vào nghề, bạn cũng đã từng hỏi những câu ngớ ngẩn như vậy. Hãy bao dung.
-- **Micro-management (Quản lý vi mô):** Ép Junior phải code y chang từng ký tự, từng cách đặt tên biến như phong cách của mình. **Cách phòng tránh:** Code review chỉ nên tập trung vào Kiến trúc, Hiệu năng và Lỗi logic. Về phong cách (Style), hãy cấu hình `flutter analyze` hoặc `lints` để máy móc tự động "mắng" Junior, thay vì bạn làm điều đó.
+**Senior Detail:** Khái niệm "Rubber Duck Debugging" (Giải thích code cho con vịt cao su). Thường khi Junior đang kẹt, chỉ cần bạn ngồi im nghe họ giải thích từng dòng code họ đang viết, họ sẽ TỰ ĐỘNG nhận ra chỗ sai mà bạn chưa cần nói chữ nào!
 
 ---
+
+## 2. Lời khuyên Google/Dart Style Guide (Về Document)
+> "DO format comments like sentences."
+Khi bạn viết tài liệu hoặc comment giải thích thuật toán cho Junior, hãy viết như một câu văn đàng hoàng, có chủ ngữ vị ngữ, viết hoa đầu dòng, chấm cuối câu. Điều này rèn luyện sự chuyên nghiệp và minh bạch trong giao tiếp.
+
 ---
-### 🚀 Mini Pet Project: Tình huống Giả định (Role-play Mentoring)
 
-**Yêu cầu:**
-Hãy tưởng tượng bạn đang là Tech Lead. Một Junior chạy ra báo cáo: "Anh ơi, cái ListView của em thỉnh thoảng giật lag kinh khủng, em không biết tại sao".
-1. Đóng vai người đàn anh, viết ra 3 câu hỏi Socratic (hỏi gợi mở) bạn sẽ đặt ra cho Junior đó thay vì đưa ngay câu trả lời.
-2. Vận dụng kỹ thuật Vịt Cao Su: Bạn bảo Junior đọc lại cấu trúc cây UI của họ xem có đang bọc sai widget không.
-3. Lập ra một Checklist "Bằng chứng" buộc Junior phải chuẩn bị trước khi báo cáo lỗi trong tương lai.
+## 3. Nỗi đau Junior: Code ❌ SAI và ✅ ĐÚNG (Dành cho Mentor)
 
-> 🔗 **Tài liệu tham khảo (Ref Docs):**
-> - [Rubber Duck Debugging Concept](https://rubberduckdebugging.com/)
-> - [How to ask for programming help](https://stackoverflow.com/help/how-to-ask)
+### Nỗi đau: Đưa ra đáp án ngay lập tức (Spoon-feeding)
+**Ngộ nhận:** Mentor nghĩ rằng giải quyết nhanh bug cho Junior sẽ giúp dự án đi nhanh hơn.
 
-*Dẫn dắt người khác giải quyết vấn đề cũng là một cách để củng cố lại kiến thức của chính mình. Giữ vững tinh thần Mentor nhé!*
+❌ **SAI (Bad Mentor):**
+Junior: "Anh ơi, cái list của em tự dưng bị RenderFlex Overflow, tràn màn hình dưới đáy."
+Mentor: "À, em bọc cái ListView vào trong `Expanded` là xong, làm đi." (Junior làm theo, fix được, nhưng không hiểu tại sao).
+
+✅ **ĐÚNG (Good Mentor - Socratic Method):**
+Junior: "Anh ơi, cái list bị Overflow..."
+Mentor: "Em dùng Widget Inspector chưa? Em thấy ListView đang nằm trong Widget nào?"
+Junior: "Nằm trong Column anh ạ."
+Mentor: "Ok, Column yêu cầu các con của nó có kích thước nhất định. Nhưng ListView mặc định lại muốn kéo dài vô hạn. Vậy 2 đứa này đánh nhau. Theo em làm sao để báo cho ListView biết nó chỉ được chiếm phần không gian *còn lại* của Column?"
+Junior: "À, em thử dùng Expanded nhé!" 
+
+### Nỗi đau 2: Bỏ mặc Junior tự bơi quá lâu
+❌ **SAI:** Quẳng một task quá khó và nói "Tự search Google đi".
+✅ **ĐÚNG:** Time-boxing. Giao task kèm theo quy định: "Em hãy tự tìm hiểu trong tối đa 2 tiếng. Nếu quá 2 tiếng không ra giải pháp nào khả thi, phải báo anh ngay để cùng tháo gỡ, không được ngồi kẹt mãi."
+
+---
+
+## 4. 🐛 Thử Thách Gỡ Lỗi (Debugging Challenge)
+
+Một bạn Junior hỏi bạn: "Em gọi setState() rồi mà biến số đếm trên màn hình không chịu cập nhật, em in `print` thì biến vẫn tăng". Bạn vào xem code:
+
+```dart
+class CounterWidget extends StatefulWidget {
+  @override
+  _CounterWidgetState createState() => _CounterWidgetState();
+}
+
+class _CounterWidgetState extends State<CounterWidget> {
+  int count = 0;
+
+  void increment() {
+    count++;
+    setState(() {
+      // Gọi setState ở đây
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CounterDisplay(count: count);
+  }
+}
+
+// Widget hiển thị
+class CounterDisplay extends StatelessWidget {
+  CounterDisplay({this.count = 0}); // 🚨 Cảnh báo!
+  
+  final int count;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Text('Count: $count');
+  }
+}
+```
+**Câu hỏi Unblock:** Bạn sẽ hỏi bạn Junior câu hỏi gì để bạn ấy nhận ra lỗi sai ở constructor của `CounterDisplay`? (Gợi ý liên quan đến biến final và cách Dart gán giá trị mặc định / truyền tham số).
+
+---
+
+## 5. 🚀 System Design Challenge (Dành cho Mentorship)
+
+**Yêu cầu:** Lên kế hoạch cho buổi "Pair Programming" tuần tới với Junior.
+Hãy soạn một document ngắn 1 trang:
+1. Chủ đề buổi Pair: Refactor một màn hình cũ từ setState sang dùng BLoC.
+2. Mục tiêu: Junior hiểu luồng Event -> State.
+3. Phân chia vai trò: Ai làm Driver (người gõ phím), ai làm Navigator (người hướng dẫn). 
+*Gợi ý:* Hãy để Junior làm Driver, bạn làm Navigator chỉ dẫn đường, tuyệt đối không giằng lấy bàn phím!
+
+---
+
+## Tham khảo
+- [Pair Programming Guide](https://martinfowler.com/articles/on-pair-programming.html)
+- [Psychological Safety in Tech Teams](https://rework.withgoogle.com/print/guides/5721312655835136/)
