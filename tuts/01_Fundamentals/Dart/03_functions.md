@@ -61,7 +61,7 @@ ships.forEach((ship) {
 });
 ```
 
-> 💡 **Fun Fact**: Dart Lexically Scoped, nghĩa là phạm vi biến tĩnh (tính từ vị trí viết code). Một Closure có thể "nhớ" và sử dụng các biến ở phạm vi bên ngoài nó ngay cả khi hàm bên ngoài đã chạy xong! (Rất lợi hại trong các callback bất đồng bộ).
+> 💡 **Fun Fact**: [Dart Lexically Scoped](03_1_closure_scope.md), nghĩa là phạm vi biến tĩnh (tính từ vị trí viết code). Một Closure có thể "nhớ" và sử dụng các biến ở phạm vi bên ngoài nó ngay cả khi hàm bên ngoài đã chạy xong! (Rất lợi hại trong các callback bất đồng bộ).
 
 > 🧠 **Senior Detail - Tear-offs**: Thay vì viết một hàm ẩn danh chỉ để gọi một hàm khác có cùng tham số, bạn có thể truyền thẳng tên hàm! Cách này gọi là Tear-off. Nó giúp code gọn gàng và trông vô cùng chuyên nghiệp.
 ```dart
@@ -145,5 +145,8 @@ Viết một chương trình nhỏ chuyên tính toán và đánh giá chỉ s�
 > 🔗 **Tài liệu tham khảo (Ref Docs):** 
 > - [Dart Functions Official Docs](https://dart.dev/language/functions)
 > - [Dart Anonymous functions & Tear-offs](https://dart.dev/language/functions#anonymous-functions)
+> 
+> 🎓 **Bài giải mẫu (Sample Solution):**
+> Nếu bạn bí ý tưởng hoặc muốn xem code chuẩn Senior viết như thế nào, hãy tham khảo [bmi_calculator.sample.dart](bmi_calculator.sample.dart).
 
 *Tính năng này cực kỳ sát với thực tế khi bạn làm các App sức khỏe. Bắt tay vào làm thôi!*

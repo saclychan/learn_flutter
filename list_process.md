@@ -12,8 +12,9 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 
 ### 🟢 01_Fundamentals (Nền tảng Dart)
 - [x] Bài 1: Biến & Kiểu dữ liệu - *Hoàn thành*
-- [ ] Bài 2: Cấu trúc điều khiển - *Chưa học*
-- [ ] Bài 3: Hàm (Functions) - *Chưa học*
+- [x] Bài 2: Cấu trúc điều khiển - *Hoàn thành*
+- [x] Bài 3: Hàm (Functions) - *Hoàn thành*
+- [ ] Bài 3.1: Scope & Closure - *Chưa học*
 - [ ] Bài 4: OOP Cơ bản - *Chưa học*
 - [ ] Bài 5: OOP Nâng cao - *Chưa học*
 - [ ] Bài 6: Bất đồng bộ & Null Safety - *Chưa học*
@@ -38,8 +39,9 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 | Ngày học | Module | Bài học & Dự án | Thời gian | Trạng thái | Đánh giá (Tự chấm) | Link Code / Review |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 25/07/2026 | 01_Fundamentals | Bài 1: Hồ sơ Nhân vật RPG | ~ 1 giờ | ✅ Done | Tốt (Hiểu rõ kiểu dữ liệu, Final, Interpolation) | [rpg_profile.dart](./pets/tuts/01_Fundamentals/Dart/01_variables_data_types.md/rpg_profile.dart) |
-| --/--/---- | 01_Fundamentals | Bài 2: Vòng quay Nga ngẫu nhiên | | ⏳ Todo | | |
-| --/--/---- | 01_Fundamentals | Bài 3: Máy tính BMI thông minh | | ⏳ Todo | | |
+| 25/07/2026 | 01_Fundamentals | Bài 2: Vòng quay Nga ngẫu nhiên | ~ 1 giờ | ✅ Done | Xuất sắc (Biết dùng switch expression, if-case, collection for) | [dice_roller.dart](./pets/tuts/01_Fundamentals/Dart/02_control_flow.md/dice_roller.dart) |
+| 25/07/2026 | 01_Fundamentals | Bài 3: Máy tính BMI thông minh | ~ 1 giờ | ✅ Done | Tuyệt vời (Khám phá Records, Nested Maps, xử lý Null Safety) | [bmi_calculator.dart](./pets/tuts/01_Fundamentals/Dart/03_functions.md/bmi_calculator.dart) |
+| --/--/---- | 01_Fundamentals | Bài 3.1: Nhà máy tạo thẻ ID | | ⏳ Todo | | |
 | --/--/---- | 01_Fundamentals | Bài 4: App Quản lý Chi tiêu | | ⏳ Todo | | |
 | --/--/---- | 01_Fundamentals | Bài 5: Hệ thống Nhà thông minh | | ⏳ Todo | | |
 | --/--/---- | 01_Fundamentals | Bài 6: Mô phỏng API Thời tiết | | ⏳ Todo | | |
@@ -50,6 +52,8 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 *Nơi ghi lại những khoảnh khắc "À há" (Aha moments), những lỗi ngớ ngẩn (Junior Pitfalls) bạn đã tự mắc phải và bài học rút ra.*
 
 - **25/07/2026:** Làm bài tập 1 nhận ra hàm `print` tự động xuống dòng. Biết thêm cách dùng `stdout.write` (từ `dart:io`) và dùng `.join()` để nối mảng string siêu nhanh gọn.
+- **25/07/2026:** Vận dụng cực tốt `switch expression` và `if-case` của Dart 3. Cần lưu ý việc sinh mảng quá lớn in ra console. Thư viện `dart:core` là mặc định, không cần import tay.
+- **25/07/2026:** Trải nghiệm cảm giác bóc tách dữ liệu cực sướng với `Records Destructuring` trong Dart 3. Học được thêm cách dùng Data Class thay cho việc lồng Map quá sâu.
 - ...
 
 ---
