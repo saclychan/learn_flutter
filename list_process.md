@@ -12,6 +12,7 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 
 ### 🟢 01_Fundamentals (Nền tảng Dart)
 - [x] Bài 1: Biến & Kiểu dữ liệu - *Hoàn thành*
+- [ ] Bài 1.1: Records, Destructuring & Nested Maps - *Chưa học*
 - [x] Bài 2: Cấu trúc điều khiển - *Hoàn thành*
 - [x] Bài 3: Hàm (Functions) - *Hoàn thành*
 - [ ] Bài 3.1: Scope & Closure - *Chưa học*
@@ -39,6 +40,7 @@ Tài liệu này dùng để theo dõi tiến độ học tập, lưu vết th�
 | Ngày học | Module | Bài học & Dự án | Thời gian | Trạng thái | Đánh giá (Tự chấm) | Link Code / Review |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 25/07/2026 | 01_Fundamentals | Bài 1: Hồ sơ Nhân vật RPG | ~ 1 giờ | ✅ Done | Tốt (Hiểu rõ kiểu dữ liệu, Final, Interpolation) | [rpg_profile.dart](./pets/tuts/01_Fundamentals/Dart/01_variables_data_types.md/rpg_profile.dart) |
+| --/--/---- | 01_Fundamentals | Bài 1.1: Trình phân tích API | | ⏳ Todo | | |
 | 25/07/2026 | 01_Fundamentals | Bài 2: Vòng quay Nga ngẫu nhiên | ~ 1 giờ | ✅ Done | Xuất sắc (Biết dùng switch expression, if-case, collection for) | [dice_roller.dart](./pets/tuts/01_Fundamentals/Dart/02_control_flow.md/dice_roller.dart) |
 | 25/07/2026 | 01_Fundamentals | Bài 3: Máy tính BMI thông minh | ~ 1 giờ | ✅ Done | Tuyệt vời (Khám phá Records, Nested Maps, xử lý Null Safety) | [bmi_calculator.dart](./pets/tuts/01_Fundamentals/Dart/03_functions.md/bmi_calculator.dart) |
 | --/--/---- | 01_Fundamentals | Bài 3.1: Nhà máy tạo thẻ ID | | ⏳ Todo | | |
