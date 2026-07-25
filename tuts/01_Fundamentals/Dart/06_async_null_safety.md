@@ -15,6 +15,7 @@ String? nickname;      // Có thể là chuỗi, có thể null
 
 ### Xử lý biến Nullable
 Để dùng biến `?`, bạn phải kiểm tra trước hoặc xử lý nó:
+> 💡 **So sánh:** `?` dùng lúc KHAI BÁO để cho phép biến được Null. `??` dùng lúc THỰC THI để chọn giá trị thay thế nếu vế trái Null. `??=` dùng để gán giá trị mới vào biến CHỈ KHI biến đó hiện tại đang Null.
 - **Toán tử `??` (Cung cấp giá trị mặc định)**
   ```dart
   String displayName = nickname ?? 'Unknown User'; 
@@ -71,8 +72,70 @@ var results = await Future.wait([getProfile(), getSettings(), getFriends()]);
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Quên `await` khi gọi API (Lỗi kinh điển):** Gọi hàm trả về `Future` mà quên `await`, kết quả là bạn nhận được một hộp quà (Future) chứ không phải món đồ bên trong (Data). UI sẽ hiện lỗi kiểu báo không tương thích hoặc trắng xóa. **Cách phòng tránh:** Luôn rà soát cẩn thận các hàm có chữ `async`. Nếu thấy gọi API, phải có `await` đằng trước.
+  ```dart
+  // ❌ SAI: Quên await
+  void showData() async {
+    var data = fetchApi(); 
+    print(data); // In ra "Instance of Future<String>"
+  }
+  
+  // ✅ ĐÚNG: Nhớ await
+  void showData() async {
+    var data = await fetchApi(); 
+    print(data);
+  }
+  ```
 - **Vung vẩy "Búa tạ" (Toán tử `!`):** Thấy báo lỗi Null Safety, Junior thường "tiện tay" ném dấu `!` vào để ép compiler im lặng. Đây là mầm mống của thảm họa `NullThrownError` lúc app đang chạy. **Cách phòng tránh:** Chỉ dùng `!` khi 100% tự tin biến không thể null. Luôn ưu tiên dùng `??` hoặc `if (var != null)` để xử lý luồng an toàn.
+  ```dart
+  // ❌ SAI: Ép kiểu bạo lực
+  String? name;
+  print(name!.length); // Crash app ngay!
+  
+  // ✅ ĐÚNG: Xử lý dự phòng
+  String? name;
+  print((name ?? 'Vô danh').length);
+  ```
 - **Nghẽn cổ chai API:** Gọi tuần tự 3 API mất 3x thời gian, thay vì dùng `Future.wait` để chạy song song. **Cách phòng tránh:** Nhận diện các task bất đồng bộ không phụ thuộc lẫn nhau, và gộp chúng vào `Future.wait`.
+  ```dart
+  // ❌ SAI: Đợi từng cái một (Mất 3 giây)
+  await api1(); 
+  await api2();
+  await api3();
+  
+  // ✅ ĐÚNG: Chạy song song (Mất 1 giây)
+  await Future.wait([api1(), api2(), api3()]);
+  ```
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- Đừng dùng `.then()` vì nó sinh ra "Callback Hell". Hãy dùng `async/await` để code bất đồng bộ nhìn gọn gàng như code đồng bộ.
+- Bắt buộc phải có khối `try/catch` bọc quanh các đoạn `await` gọi API để bắt lỗi mạng.
+- Hạn chế tối đa việc sử dụng toán tử `!` để ép kiểu khác Null. Luôn xử lý giá trị dự phòng (Fallback) bằng `??`.
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Code gọi API thời tiết dưới đây đang bị lỗi cú pháp `await` và cố tình dùng `!` ép kiểu một biến đang `null` gây crash app (Màn hình đỏ). Chạy thử file `buggy_async.dart` và sửa lỗi.
+
+```dart
+Future<String?> fetchWeather() {
+  return Future.delayed(Duration(seconds: 2), () => null); // Lỗi server trả về null
+}
+
+// Bug 1: Quên từ khóa khai báo hàm bất đồng bộ
+void main() {
+  print('Đang lấy thời tiết...');
+  
+  // Bug 2: Gọi await nhưng hàm main không phải async
+  String? weather = await fetchWeather(); 
+  
+  // Bug 3: Ép kiểu bạo lực gây crash!
+  print('Thời tiết hôm nay là: \${weather!}'); 
+}
+```
+**Gợi ý sửa lỗi:**
+1. Thêm `async` vào sau `main()`.
+2. Bỏ dấu `!` đi, thay vào đó dùng `?? 'Không có dữ liệu'` để xử lý an toàn.
+3. Bọc toàn bộ đoạn code bằng `try { ... } catch (e) { print('Lỗi: $e'); }`.
 
 ---
 ### 🚀 Mini Pet Project: Mô phỏng Gọi API Thời tiết (Weather API Mock)

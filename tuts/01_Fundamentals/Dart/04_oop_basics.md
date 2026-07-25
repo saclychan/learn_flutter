@@ -68,6 +68,7 @@ var u2 = User.guest(); // Code siêu tự minh!
 
 ### Factory Constructors
 `factory` cho phép bạn viết logic bên trong constructor và tuỳ ý quyết định xem sẽ trả về instance (đối tượng) mới hay dùng lại đối tượng cũ (áp dụng mẫu thiết kế Singleton), hoặc trả về một lớp con.
+> 💡 **So sánh:** Constructor thường mặc định LUÔN LUÔN đẻ ra một đối tượng hoàn toàn mới trên RAM. Còn `factory` constructor giống như một hàm bình thường, nó có quyền dùng từ khóa `return` để kiểm tra và trả về một object ĐÃ CÓ SẴN trên RAM.
 ```dart
 class Logger {
   static final Logger _cache = Logger._internal(); // Biến static nội bộ
@@ -102,8 +103,64 @@ class Jedi {
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Phơi bày mọi thứ (Thiếu Encapsulation):** Quên dùng dấu `_` để bảo vệ các biến nội bộ là một lỗi rất phổ biến. Hậu quả là các class khác thoải mái sửa đổi trạng thái của class hiện tại, gây ra những bug dữ liệu cực kỳ khó dò ("Ai đã đổi giá trị của biến này vậy?"). **Cách phòng tránh:** Luôn mặc định biến là private (`_`). Chỉ khi nào bên ngoài thực sự cần đọc/ghi, mới mở ra bằng Getter/Setter.
+  ```dart
+  // ❌ SAI: Phơi bày dữ liệu
+  class Wallet {
+    double money = 1000; 
+  }
+  
+  // ✅ ĐÚNG: Đóng gói dữ liệu
+  class Wallet {
+    double _money = 1000;
+    double get money => _money; // Chỉ cho đọc, cấm ghi đè
+  }
+  ```
 - **Ngộ nhận Constructor:** Nhiều bạn nghĩ Constructor chỉ để khởi tạo giá trị. Thực tế với Dart, Factory Constructors còn giúp quản lý caching, trả về các instance đã tạo (Singleton), hoặc quyết định trả về subtype nào. Đừng bó hẹp tư duy Constructor = Khởi tạo biến.
 - **Quên dùng Cascade (`..`):** Khởi tạo object và gọi liên tiếp 4-5 hàm của object đó bằng cách gõ tên biến nhiều lần (vd: `ship.fuel = 10; ship.color = 'red';`). Nó không sai nhưng nhìn rất "Junior". **Cách phòng tránh:** Tập thói quen dùng `..` để code mượt và ngắn gọn hơn.
+  ```dart
+  // ❌ SAI: Khởi tạo lặp lại tên biến
+  var p = Player();
+  p.name = 'Vader';
+  p.hp = 100;
+  
+  // ✅ ĐÚNG: Cascade siêu mượt
+  var p = Player()
+    ..name = 'Vader'
+    ..hp = 100;
+  ```
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- Đặt tên Class là `UpperCamelCase` (VD: `Spaceship`, `BankAccount`).
+- Dùng từ khóa `this.propertyName` trực tiếp trong tham số của constructor thay vì gán thủ công bên trong khối `{}`.
+- Đừng lạm dụng Getter/Setter nếu biến đó không có logic gì đặc biệt. Cứ để nó là biến public.
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Lớp `BankAccount` dưới đây lỡ để public biến số dư `balance` khiến ai cũng có thể tự do thay đổi tiền trong tài khoản của mình. Chạy thử file `buggy_bank.dart` và áp dụng tính đóng gói (Encapsulation) để sửa lỗi.
+
+```dart
+class BankAccount {
+  // Bug 1: Biến này quá hớ hênh, ai cũng sửa được
+  double balance;
+  
+  BankAccount(this.balance);
+}
+
+void main() {
+  var myAccount = BankAccount(1000);
+  print('Số dư ban đầu: \${myAccount.balance}');
+  
+  // Bug 2: Hacker dễ dàng hack tiền!
+  myAccount.balance = 999999999; 
+  
+  print('Số dư sau khi hack: \${myAccount.balance}');
+}
+```
+**Gợi ý sửa lỗi:**
+1. Thêm dấu gạch dưới `_` trước `balance` để biến nó thành private (đóng gói).
+2. Tạo một **Getter** để cho phép bên ngoài ĐỌC số dư (nhưng không được ghi đè bằng dấu `=`).
+3. Tạo một hàm `deposit(double amount)` để nạp tiền, trong đó có kiểm tra `if (amount > 0)` mới cho nạp.
 
 ---
 ### 🚀 Mini Pet Project: App Quản lý Chi tiêu (Expense Tracker Core)

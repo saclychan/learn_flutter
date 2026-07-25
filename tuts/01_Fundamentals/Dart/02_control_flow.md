@@ -37,6 +37,7 @@ List<String> planets = ['Tatooine', 'Naboo', 'Coruscant'];
 for (var planet in planets) {
   print('Du hành tới $planet');
 }
+// 💡 Khi nào dùng for-in? Khi bạn chỉ cần lấy giá trị phần tử. Nếu bạn cần lấy chỉ số index (0, 1, 2) thì dùng for truyền thống. Nếu bạn muốn biến đổi list cũ thành list mới, hãy dùng hàm `.map()`.
 ```
 
 > 🧠 **Senior Detail - Collection `if` và Collection `for`**: Đây là "vũ khí bí mật" của Dart khiến việc viết UI Flutter cực kỳ sướng. Bạn có thể chèn `if` và `for` **TRỰC TIẾP** vào bên trong một khai báo List/Set/Map!
@@ -94,8 +95,78 @@ String status = switch (rank) {
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Vòng lặp vô tận (Infinite loop):** Lỗi kinh điển khi dùng `while` là quên cập nhật biến điều kiện bên trong vòng lặp, dẫn đến app treo cứng, nóng máy và crash do tràn bộ nhớ (Out of Memory). **Cách phòng tránh:** Luôn nhẩm lại logic tăng/giảm điều kiện trước khi chạy code vòng lặp.
+  ```dart
+  // ❌ SAI: Quên cập nhật biến điều kiện
+  int hp = 10;
+  while(hp > 0) {
+    print('Still alive!'); // In ra vô hạn, treo app
+  }
+  
+  // ✅ ĐÚNG: Nhớ trừ HP
+  int hp = 10;
+  while(hp > 0) {
+    print('Still alive!');
+    hp--; // Cập nhật điều kiện dừng
+  }
+  ```
 - **Mê cung If-Else (Nested If-Else):** Junior thường lồng 3, 4 tầng `if-else` khiến code trông như một cái phễu khổng lồ (Arrow anti-pattern), cực kỳ khó đọc. **Cách phòng tránh:** Học cách **Early Return** (Return sớm). Kiểm tra trường hợp lỗi/ngoại lệ và `return` ngay lập tức, để luồng code chính trở nên "phẳng" (không bị thụt lề quá nhiều).
+  ```dart
+  // ❌ SAI: Mê cung lồng nhau
+  void login(User? user) {
+    if (user != null) {
+      if (user.isActive) {
+        if (user.password == '123') {
+          print('Welcome');
+        }
+      }
+    }
+  }
+  
+  // ✅ ĐÚNG: Early return
+  void login(User? user) {
+    if (user == null) return;
+    if (!user.isActive) return;
+    if (user.password != '123') return;
+    
+    print('Welcome');
+  }
+  ```
 - **Ngộ nhận về `switch-case`:** Nhiều bạn nghĩ `switch` cũ kỹ và cồng kềnh. Ở Dart 3, `switch` đã trở thành một biểu thức vô cùng mạnh mẽ với Pattern Matching. Hãy cố gắng tận dụng nó để thay thế `if-else` dài dòng.
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- **KHÔNG dùng ngoặc nhọn `{}`** cho khối lệnh `if` rỗng hoặc chỉ có 1 dòng duy nhất nếu code đủ ngắn.
+- Dùng cấu trúc `if-case` của Dart 3 thay cho việc viết hàng loạt lệnh kiểm tra kiểu `is`.
+- Khi cần trả về giá trị từ nhiều trường hợp, hãy ưu tiên dùng `switch` expression thay vì chuỗi `if-else` dài dòng.
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Code phạt tốc độ xe dưới đây đang gặp lỗi logic nghiêm trọng và lỗi vòng lặp vô tận. Chạy thử file `buggy_flow.dart` dưới đây và sửa lỗi.
+
+```dart
+void main() {
+  int speed = 90;
+  
+  // Bug 1: Lỗi logic kiểm tra (Thứ tự if-else sai)
+  if (speed > 50) {
+    print('Phạt 500k');
+  } else if (speed > 80) {
+    print('Phạt 2 triệu và tước bằng'); 
+  } else {
+    print('Tốc độ an toàn');
+  }
+
+  // Bug 2: Vòng lặp vô tận (Treo máy)
+  int fuel = 3;
+  while (fuel > 0) {
+    print('Đang chạy... Xăng còn: $fuel');
+    // Quên trừ xăng ở đây!
+  }
+}
+```
+**Gợi ý sửa lỗi:**
+1. Logic `if-else if` sẽ dừng lại ngay ở nhánh ĐẦU TIÊN đúng. Số 90 lớn hơn 50 nên nhánh đầu tiên thỏa mãn. Hãy đảo ngược thứ tự các điều kiện (Từ khắc nghiệt nhất đến nhẹ nhất).
+2. Hãy trừ biến `fuel` đi 1 đơn vị (`fuel--`) bên trong vòng lặp.
 
 ---
 ### 🚀 Mini Pet Project: Trò chơi Vòng quay Nga ngẫu nhiên (Russian Roulette / Dice Roller)

@@ -78,7 +78,55 @@ mysteriousVariable.doSomethingCrazy(); // Code vẫn build được, nhưng sẽ
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Ngộ nhận về khai báo biến:** Các bạn mới chuyển từ Python hoặc JavaScript sang thường hay viết code gán biến hoặc `print` "lơ lửng" bên ngoài hàm. Ở Dart, nếu code thực thi không nằm trong (hoặc được gọi từ) hàm `main()`, nó sẽ báo lỗi ngay lập tức. **Cách phòng tránh:** Luôn nhớ `main()` là trái tim của ứng dụng. Mọi logic thực thi đều bắt nguồn từ đây.
+  ```dart
+  // ❌ SAI: Code lơ lửng ngoài main()
+  var name = 'Yoda';
+  print(name); // Lỗi ngay lập tức!
+  
+  // ✅ ĐÚNG: Đặt vào main()
+  void main() {
+    var name = 'Yoda';
+    print(name);
+  }
+  ```
 - **Lạm dụng `dynamic` và `var` vô tội vạ:** Code chạy được là một chuyện, đọc hiểu và bảo trì lại là chuyện khác. Rất nhiều bạn cứ `var` hoặc `dynamic` khi gọi API vì lười định nghĩa kiểu. Sau 3 tháng đọc lại code, bạn sẽ không biết biến đó chứa data gì, có những thuộc tính nào. **Cách phòng tránh:** Khai báo rõ ràng kiểu dữ liệu (`String`, `int`, hoặc tự định nghĩa Class). Dùng `final` ngay từ đầu sẽ cứu bạn khỏi hàng tá lỗi "không hiểu tại sao crash".
+  ```dart
+  // ❌ SAI: Dùng dynamic bừa bãi
+  dynamic userData = fetchApi(); 
+  userData.sayHello(); // Không báo lỗi lúc code, nhưng crash lúc chạy
+  
+  // ✅ ĐÚNG: Định nghĩa rõ kiểu
+  User userData = fetchApi();
+  userData.sayHello(); // An toàn tuyệt đối, có gợi ý code
+  ```
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- Đặt tên biến, hàm theo quy tắc `lowerCamelCase` (VD: `myVariableName`).
+- Tên Class dùng `UpperCamelCase` (VD: `MyClassName`).
+- Không sử dụng `SCREAMING_CAPS` cho các biến `const` như Java/C. Ở Dart, biến const vẫn dùng `lowerCamelCase` (VD: `const pi = 3.14` thay vì `PI`).
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Một bạn Junior vừa đẩy đoạn code sau lên GitHub. Code này chứa 3 lỗi nghiêm trọng. Nhiệm vụ của bạn là copy code này vào file `buggy_vars.dart`, chạy thử để thấy lỗi và tìm cách fix nó.
+
+```dart
+const currentTime = DateTime.now();
+var username = 'Luke';
+
+void main() {
+  int age = 20;
+  String message = "Hello " + username + ", next year you will be " + age;
+  
+  username = 123; // Chuyển đổi ID tạm thời
+  
+  print(message);
+}
+```
+**Gợi ý sửa lỗi:**
+1. Biến `currentTime` có lỗi gì với từ khóa `const`? (💡 *So sánh `const` và `final`*)
+2. Có thể cộng thẳng String với int (`+ age`) được không? Hãy dùng String Interpolation `\${}`.
+3. Biến `username` dùng `var` có gán lại thành số `123` được không?
 
 ---
 ### 🚀 Mini Pet Project: Hồ sơ Nhân vật RPG (RPG Character Profile)

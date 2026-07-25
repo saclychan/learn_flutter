@@ -28,6 +28,7 @@ Flutter có `Stream`, nhưng nó khá cơ bản. `RxDart` mở rộng `Stream` b
 
 ### BehaviorSubject
 Nó lưu lại giá trị MỚI NHẤT. Bất cứ ai lắng nghe (listen) nó kể cả sau khi giá trị đã được phát ra, đều nhận được giá trị đó ngay lập tức.
+> 💡 **So sánh:** `PublishSubject` giống như Đài phát thanh trực tiếp - Nếu bạn bật đài trễ, bạn sẽ KHÔNG nghe được bài hát vừa phát. `BehaviorSubject` giống như Spotify - Bật đài trễ nó vẫn nhớ và phát lại bài hát GẦN NHẤT cho bạn nghe.
 ```dart
 final subject = BehaviorSubject<int>();
 subject.add(100); // Phát ra số 100
@@ -47,7 +48,65 @@ searchSubject.stream
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Sửa mảng gốc trong quá trình lặp:** Junior hay dùng `forEach` rồi `.remove()` phần tử trong chính cái mảng đó. Gây ra lỗi `ConcurrentModificationError`. **Cách phòng tránh:** Dùng hàm `where` để tạo ra một mảng mới (Immutability).
+  ```dart
+  // ❌ SAI: Sửa mảng gốc khi đang lặp
+  List<int> nums = [1, 2, 3];
+  nums.forEach((n) {
+    if (n == 2) nums.remove(n); // CRASH!
+  });
+  
+  // ✅ ĐÚNG: Tạo mảng mới bằng where
+  List<int> validNums = nums.where((n) => n != 2).toList();
+  ```
 - **Quên đóng (close) Subject:** Stream mở mãi mãi dẫn tới tràn RAM. **Cách phòng tránh:** LUÔN gọi `subject.close()` trong hàm `dispose()` của StatefulWidget hoặc BLoC.
+  ```dart
+  // ❌ SAI: Khai báo Subject nhưng bỏ con giữa chợ
+  final dataSubject = BehaviorSubject<int>();
+  
+  // ✅ ĐÚNG: Luôn dọn dẹp
+  final dataSubject = BehaviorSubject<int>();
+  void dispose() {
+    dataSubject.close();
+  }
+  ```
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- Khuyến khích xâu chuỗi (Chaining) các hàm Functional (`.map`, `.where`, `.toList()`) thành một hàng dọc thay vì tạo nhiều biến tạm trung gian lắt nhắt.
+- Hạn chế tối đa việc dùng vòng lặp `for` với các mảng nếu có thể thay thế bằng các hàm của Iterable.
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Code lắng nghe thanh tìm kiếm dưới đây đang bị lỗi "ConcurrentModificationError" do sửa mảng gốc, và thiếu `debounceTime` làm API bị gọi hàng trăm lần, cộng thêm việc quên đóng luồng. Chạy thử file `buggy_rxdart.dart` và sửa lỗi.
+
+```dart
+final searchSubject = PublishSubject<String>();
+List<String> names = ['Luke', 'Leia', 'Han', 'Vader'];
+
+void main() {
+  // Bug 1: Không có debounceTime, gọi API vô tội vạ
+  searchSubject.stream.listen((query) {
+    print('Gọi API tìm kiếm: $query');
+  });
+
+  // Bug 2: Sửa mảng gốc lúc đang lặp
+  names.forEach((name) {
+    if (name == 'Vader') {
+      names.remove(name); // CRASH!
+    }
+  });
+  
+  searchSubject.add('V');
+  searchSubject.add('Va');
+  searchSubject.add('Vad');
+  
+  // Bug 3: Quên searchSubject.close();
+}
+```
+**Gợi ý sửa lỗi:**
+1. Thêm `.debounceTime(Duration(milliseconds: 500))` trước `.listen()`.
+2. Dùng `.where((name) => name != 'Vader').toList()` để tạo ra một mảng mới thay vì `.remove()` trực tiếp.
+3. Luôn gọi `.close()` ở cuối cùng.
 
 ---
 ### 🚀 Mini Pet Project: Thanh Tìm Kiếm Của Ninja (Ninja Search)

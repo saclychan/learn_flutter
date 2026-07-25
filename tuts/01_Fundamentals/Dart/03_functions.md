@@ -35,6 +35,7 @@ attack('Lightsaber', 100);
 
 ### b. Named Parameters (Tham số được đặt tên) - Rất quan trọng!
 Bọc các tham số bằng ngoặc nhọn `{}`. Khi gọi hàm, bạn phải gọi tên của chúng. Nó giúp code cực kỳ dễ đọc khi hàm có nhiều tham số. Mặc định Named Parameters là tham số tùy chọn (có thể null).
+> 💡 **So sánh**: Positional Parameters bắt buộc bạn phải nhớ THỨ TỰ truyền vào. Named Parameters cho phép truyền KHÔNG CẦN THỨ TỰ vì đã gọi đích danh, cực kỳ an toàn!
 ```dart
 void buildDroid({String? name, int? memory}) {
   print('Building $name with $memory GB');
@@ -73,8 +74,62 @@ ships.forEach(print); // Truyền hàm print trực tiếp!
 
 ## 🛑 Những nỗi đau và ngộ nhận khi còn Junior
 - **Quên ngoặc `{}` với Named Parameters:** Khi gọi hàm có tham số được đặt tên, nhiều bạn quên truyền tên tham số và truyền luôn giá trị, khiến trình biên dịch chửi bới. **Cách phòng tránh:** Luôn nhớ dấu hiệu nhận biết Named Parameter là tên biến đi kèm dấu `:` (vd: `name: 'Yoda'`).
+  ```dart
+  // ❌ SAI: Quên gọi đích danh
+  void login({required String email}) {}
+  login('luke@jedi.com'); // Lỗi cú pháp
+  
+  // ✅ ĐÚNG:
+  login(email: 'luke@jedi.com');
+  ```
 - **Hàm ôm đồm quá nhiều việc (God Function):** Đây là căn bệnh trầm kha. Hàm vừa fetch API, vừa xử lý logic, vừa update UI... Code phình to hàng trăm dòng, rất dễ sinh bug. **Cách phòng tránh:** Áp dụng nguyên tắc Single Responsibility (Đơn trách nhiệm). Một hàm chỉ làm ĐÚNG 1 việc. Nếu hàm quá 30 dòng, hãy cân nhắc tách nó ra.
-- **Truyền quá nhiều tham số:** Một hàm nhận tới 5-6 tham số là một "red flag" (dấu hiệu code bốc mùi). **Cách phòng tránh:** Bọc các tham số đó vào một Class riêng (vd: thay vì `createUser(name, age, email, phone, address)`, hãy dùng `createUser(User data)`).
+  ```dart
+  // ❌ SAI: Hàm làm 3 việc
+  void processData() {
+    // 1. Fetch API
+    // 2. Format JSON
+    // 3. Update DB
+  }
+  ```
+- **Truyền quá nhiều tham số:** Một hàm nhận tới 5-6 tham số là một "red flag" (dấu hiệu code bốc mùi). **Cách phòng tránh:** Bọc các tham số đó vào một Class riêng.
+  ```dart
+  // ❌ SAI: Tham số dài dằng dặc
+  void register(String name, int age, String email, String phone) {}
+  
+  // ✅ ĐÚNG: Bọc vào Object
+  class RegisterData {
+    String name; int age; String email; String phone;
+    RegisterData(this.name, this.age, this.email, this.phone);
+  }
+  void register(RegisterData data) {}
+  ```
+
+## 🛡️ Lời khuyên từ Dart/Google Style Guide
+- Luôn ưu tiên dùng **Arrow Function `=>`** cho các hàm chỉ có MỘT CÂU LỆNH duy nhất.
+- Luôn ghi rõ kiểu dữ liệu trả về của hàm (kể cả `void`).
+- Đặt tên hàm theo quy tắc `lowerCamelCase` và phải là một Cụm Động Từ (Verb phrase), ví dụ: `calculateTotal`, `fetchData`.
+
+---
+### 🐛 Thử Thách Gỡ Lỗi (Intentional Bugs)
+
+> 💡 **Tình huống:** Hàm tính lương dưới đây được thiết kế cho nhân viên, nhưng do truyền sai thứ tự tham số Positional, giám đốc bị tính nhầm lương thành 5 ngàn đồng còn nhân viên lao công thì lãnh 50 triệu! Chạy thử file `buggy_functions.dart` và sửa lỗi.
+
+```dart
+// Bug 1: Hàm này quên không ghi kiểu trả về
+calculateSalary(int baseSalary, int bonus, int tax) {
+  // Bug 2: Quên return
+  baseSalary + bonus - tax;
+}
+
+void main() {
+  // Lỗi truyền nhầm thứ tự nhưng trình biên dịch không hề báo lỗi!
+  int salary = calculateSalary(5000, 50000000, 0); 
+  print('Lương của bạn là: $salary');
+}
+```
+**Gợi ý sửa lỗi:**
+1. Hãy sửa đổi hàm `calculateSalary` để sử dụng **Named Parameters** (bọc trong `{}`) và thêm từ khóa `required`. Điều này sẽ ngăn chặn vĩnh viễn lỗi truyền sai thứ tự! (💡 *So sánh: Named Parameter an toàn hơn Positional Parameter khi hàm có nhiều hơn 2 tham số*).
+2. Bổ sung từ khóa `int` vào trước tên hàm và từ khóa `return` vào trong hàm. Hoặc gộp lại thành Arrow function `=>`.
 
 ---
 ### 🚀 Mini Pet Project: Máy tính BMI thông minh (Smart BMI Calculator)
